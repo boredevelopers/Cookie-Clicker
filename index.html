@@ -1,18 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
- <title>Cookie Clicker</title>
+    <title>Cookie Clicker</title>
 </head>
-<body>
-<button onclick="clickCookie()">Cookie</button>
+
+<body style="background-color:brown; text-align:center; font-family:Arial; color:white;">
+
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBjR56NYPaPmWCSxTuyLyzt77zyYvVSMI6A&s"
+onclick="clickCookie()"
+style="width:200px; cursor:pointer;"
+alt="cookie">
+
 <p id="cookieCount">Cookies: 0</p>
+
+<button onclick="buyCursor()">Buy Cursor</button>
+<button onclick="buyGrandma()">Buy Grandma</button>
+
 <script>
+
 let cookies = 0;
+let cookiesPerSecond = 0;
+
+let cursor = {
+    cost: 10,
+    owned: 0,
+    cps: 1
+};
+
+let grandma = {
+    cost: 100,
+    owned: 0,
+    cps: 5
+};
+
+function updateScreen() {
+    document.getElementById("cookieCount").innerText =
+        "Cookies: " + cookies;
+}
+
 function clickCookie() {
     cookies += 1;
-    console.log("Cookies: " + cookies);
-    document.getElementById("cookieCount").innerText = "Cookies: " + cookies;
+    updateScreen();
 }
+
+function buyCursor() {
+    if (cookies >= cursor.cost) {
+        cookies -= cursor.cost;
+        cursor.owned += 1;
+
+        cookiesPerSecond += cursor.cps;
+
+        cursor.cost = Math.floor(cursor.cost * 1.2);
+        updateScreen();
+    }
+}
+
+function buyGrandma() {
+    if (cookies >= grandma.cost) {
+        cookies -= grandma.cost;
+        grandma.owned += 1;
+
+        cookiesPerSecond += grandma.cps;
+
+        grandma.cost = Math.floor(grandma.cost * 1.2);
+        updateScreen();
+    }
+}
+
+setInterval(function() {
+    cookies += cookiesPerSecond;
+    updateScreen();
+}, 1000);
+
 </script>
+
 </body>
 </html>
