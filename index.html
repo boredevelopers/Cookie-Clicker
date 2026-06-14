@@ -24,9 +24,25 @@
         #game {
             text-align: center;
             position: relative;
-            padding-top: 60px;
+            padding-top: 80px;
         }
 
+        /* TOP BAR FIXED */
+        #topBar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 2000;
+        }
+
+        #topBar button {
+            width: auto;
+            padding: 8px 12px;
+        }
+
+        /* SHOP */
         #shop {
             position: fixed;
             right: -220px;
@@ -44,11 +60,8 @@
             right: 0;
         }
 
-        #shopButton {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
+        #shop h2 {
+            margin-top: 40px;
         }
 
         .item {
@@ -56,8 +69,6 @@
         }
 
         button {
-            width: 100%;
-            padding: 8px;
             cursor: pointer;
         }
 
@@ -78,12 +89,13 @@
 
 <body>
 
-<!-- SHOP BUTTON -->
-<button id="shopButton" onclick="toggleShop()">☰ Shop</button>
+<!-- TOP BAR -->
+<div id="topBar">
+    <button onclick="toggleShop()">☰ Shop</button>
+    <button onclick="saveGame()">Save Game</button>
+</div>
 
-<!-- SAVE BUTTON -->
-<button onclick="saveGame()">Save Game</button>
-
+<!-- GAME -->
 <div id="game">
 
     <img id="cookie"
@@ -115,9 +127,7 @@
 
 <script>
 
-/* =========================
-   GAME STATE
-========================= */
+/* GAME STATE */
 let cookies = 0;
 let cookiesPerSecond = 0;
 
@@ -130,17 +140,13 @@ let playTime = 0;
 
 let shopOpen = false;
 
-/* =========================
-   SHOP TOGGLE
-========================= */
+/* SHOP TOGGLE */
 function toggleShop() {
     shopOpen = !shopOpen;
     document.getElementById("shop").classList.toggle("open");
 }
 
-/* =========================
-   SAVE / LOAD
-========================= */
+/* SAVE */
 function saveGame() {
     localStorage.setItem("cookies", cookies);
     localStorage.setItem("cookiesPerSecond", cookiesPerSecond);
@@ -151,6 +157,7 @@ function saveGame() {
     localStorage.setItem("playTime", playTime);
 }
 
+/* LOAD */
 function loadGame() {
     cookies = Number(localStorage.getItem("cookies")) || 0;
     cookiesPerSecond = Number(localStorage.getItem("cookiesPerSecond")) || 0;
@@ -163,9 +170,7 @@ function loadGame() {
     playTime = Number(localStorage.getItem("playTime")) || 0;
 }
 
-/* =========================
-   UI UPDATE
-========================= */
+/* UI */
 function updateScreen() {
     document.getElementById("cookieCount").innerText =
         "Cookies: " + cookies;
@@ -180,25 +185,15 @@ function updateScreen() {
         `Clicks: ${totalClicks} | Total Cookies: ${totalCookies} | Time: ${playTime}s`;
 }
 
-/* =========================
-   COOKIE CLICK
-========================= */
+/* CLICK */
 function clickCookie() {
     cookies++;
     totalClicks++;
     totalCookies++;
-
-    let cookie = document.getElementById("cookie");
-    cookie.classList.remove("clicked");
-    void cookie.offsetWidth;
-    cookie.classList.add("clicked");
-
     updateScreen();
 }
 
-/* =========================
-   BUY SYSTEM
-========================= */
+/* BUY */
 function buyCursor() {
     if (cookies >= cursor.cost) {
         cookies -= cursor.cost;
@@ -219,28 +214,18 @@ function buyGrandma() {
     }
 }
 
-/* =========================
-   CPS LOOP
-========================= */
+/* LOOP */
 setInterval(() => {
     cookies += cookiesPerSecond;
     totalCookies += cookiesPerSecond;
     updateScreen();
 }, 1000);
 
-/* =========================
-   PLAY TIME
-========================= */
-setInterval(() => {
-    playTime++;
-}, 1000);
+setInterval(() => playTime++, 1000);
 
-/* =========================
-   AUTO SAVE
-========================= */
 setInterval(saveGame, 5000);
 
-/* START GAME */
+/* START */
 loadGame();
 updateScreen();
 
