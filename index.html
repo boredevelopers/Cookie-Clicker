@@ -71,6 +71,7 @@
 
 <body>
 
+<button onclick="saveGame()">Save Game</button>
 <div id="game">
 
 <img id="cookie"
@@ -98,6 +99,40 @@ alt="cookie">
 </div>
 
 <script>
+    function saveGame() {
+        localStorage.setItem("cookies", cookies);
+
+
+        localStorage.setItem("cursorOwned", cursor.owned);
+        localStorage.setItem("cursorCost", cursor.cost);
+
+
+        localStorage.setItem("grandmaOwned", grandma.owned);
+        localStorage.setItem("grandmaCost", grandma.cost);
+
+
+        localStorage.setItem("cookiesPerSecond", cookiesPerSecond);
+    }
+
+    function loadGame() {
+        cookies = Number(localStorage.getItem("cookies")) || 0;
+
+
+        cursor.owned = Number(localStorage.getItem("cursorOwned")) || 0;
+        cursor.cost = Number(localStorage.getItem("cursorCost")) || 10;
+
+
+        grandma.owned = Number(localStorage.getItem("grandmaOwned")) || 0;
+        grandma.cost = Number(localStorage.getItem("grandmaCost")) || 100;
+
+
+        cookiesPerSecond = 
+            Number(localStorage.getItem("cookiesPerSecond")) || 0;
+
+
+         updateScreen();
+
+    } 
 
 let cookies = 0;
 let cookiesPerSecond = 0;
@@ -180,6 +215,12 @@ setInterval(function() {
     cookies += cookiesPerSecond;
     updateScreen();
 }, 1000);
+
+
+loadGame();
+
+
+setInterval(saveGame, 5000);
 
 </script>
 
