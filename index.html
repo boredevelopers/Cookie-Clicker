@@ -3,7 +3,12 @@
 <head>
     <title>Cookie Clicker</title>
 
+    <!-- =========================
+         CSS / STYLING
+    ========================== -->
     <style>
+
+        /* Cookie click animation */
         @keyframes clickBounce {
             0%   { transform: scale(1); }
             50%  { transform: scale(0.85); }
@@ -14,6 +19,7 @@
             animation: clickBounce 0.15s ease;
         }
 
+        /* Main page styling */
         body {
             background-color: chocolate;
             font-family: Arial;
@@ -21,11 +27,13 @@
             margin: 0;
         }
 
+        /* Main game area */
         #game {
             text-align: center;
             position: relative;
         }
 
+        /* Shop panel */
         #shop {
             position: fixed;
             right: 0;
@@ -42,12 +50,14 @@
             margin-bottom: 15px;
         }
 
+        /* Buttons */
         button {
             width: 100%;
             padding: 8px;
             cursor: pointer;
         }
 
+        /* Floating +1 text */
         .floating {
             position: absolute;
             color: white;
@@ -66,73 +76,98 @@
                 transform: translateY(-60px);
             }
         }
+
     </style>
 </head>
 
 <body>
 
+<!-- =========================
+     SAVE BUTTON
+========================== -->
 <button onclick="saveGame()">Save Game</button>
+
+<!-- =========================
+     GAME AREA
+========================== -->
 <div id="game">
 
-<img id="cookie"
-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBjR56NYPaPmWCSxTuyLyzt77zyYvVSMI6A&s"
-onclick="clickCookie()"
-style="width:200px; cursor:pointer;"
-alt="cookie">
+    <!-- Main Cookie -->
+    <img id="cookie"
+    src="COOKIE_URL"
+    onclick="clickCookie()"
+    style="width:200px; cursor:pointer;"
+    alt="cookie">
 
-<p id="cookieCount">Cookies: 0</p>
+    <!-- Cookie Counter -->
+    <p id="cookieCount">Cookies: 0</p>
 
 </div>
 
+<!-- =========================
+     SHOP
+========================== -->
 <div id="shop">
+
     <h2>Shop</h2>
 
+    <!-- Cursor Upgrade -->
     <div class="item">
         <button onclick="buyCursor()">Buy Cursor</button>
         <p id="cursorInfo"></p>
     </div>
 
+    <!-- Grandma Upgrade -->
     <div class="item">
         <button onclick="buyGrandma()">Buy Grandma</button>
         <p id="grandmaInfo"></p>
     </div>
+
 </div>
 
 <script>
-    function saveGame() {
-        localStorage.setItem("cookies", cookies);
 
+/* =========================
+   PLAYER STATISTICS
+========================= */
+let totalClicks = 0;
+let totalCookiesBaked = 0;
+let playTime = 0;
 
-        localStorage.setItem("cursorOwned", cursor.owned);
-        localStorage.setItem("cursorCost", cursor.cost);
+/* =========================
+   SAVE / LOAD SYSTEM
+========================= */
 
+function saveGame() {
+    const gameData = {
+        cookies: cookies,
+        cookiesPerSecond: cookiesPerSecond,
+        cursor: cursor,
+        grandma: grandma,
+        totalClicks: totalClicks,
+        totalCookiesBaked: totalCookiesBaked,
+        playTime: playTime
+    };
+    localStorage.setItem("cookieGameSave", JSON.stringify(gameData));
+}
 
-        localStorage.setItem("grandmaOwned", grandma.owned);
-        localStorage.setItem("grandmaCost", grandma.cost);
-
-
-        localStorage.setItem("cookiesPerSecond", cookiesPerSecond);
+function loadGame() {
+    const savedData = localStorage.getItem("cookieGameSave");
+    if (savedData) {
+        const gameData = JSON.parse(savedData);
+        cookies = gameData.cookies;
+        cookiesPerSecond = gameData.cookiesPerSecond;
+        cursor = gameData.cursor;
+        grandma = gameData.grandma;
+        totalClicks = gameData.totalClicks;
+        totalCookiesBaked = gameData.totalCookiesBaked;
+        playTime = gameData.playTime;
     }
+}
 
-    function loadGame() {
-        cookies = Number(localStorage.getItem("cookies")) || 0;
-
-
-        cursor.owned = Number(localStorage.getItem("cursorOwned")) || 0;
-        cursor.cost = Number(localStorage.getItem("cursorCost")) || 10;
-
-
-        grandma.owned = Number(localStorage.getItem("grandmaOwned")) || 0;
-        grandma.cost = Number(localStorage.getItem("grandmaCost")) || 100;
-
-
-        cookiesPerSecond = 
-            Number(localStorage.getItem("cookiesPerSecond")) || 0;
-
-
-         updateScreen();
-
-    } 
+/* =========================
+   GAME VARIABLES
+========================= */
 
 let cookies = 0;
 let cookiesPerSecond = 0;
@@ -149,76 +184,56 @@ let grandma = {
     cps: 5
 };
 
+/* =========================
+   UI UPDATES
+========================= */
+
 function updateScreen() {
-    document.getElementById("cookieCount").innerText =
-        "Cookies: " + cookies;
-
-    document.getElementById("cursorInfo").innerText =
-        `Owned: ${cursor.owned} | Cost: ${cursor.cost} | +${cursor.cps}/sec`;
-
-    document.getElementById("grandmaInfo").innerText =
-        `Owned: ${grandma.owned} | Cost: ${grandma.cost} | +${grandma.cps}/sec`;
+    ...
 }
+
+/* =========================
+   COOKIE CLICKING
+========================= */
 
 function clickCookie() {
-    cookies += 1;
-
-    let cookie = document.getElementById("cookie");
-    cookie.classList.remove("clicked");
-    void cookie.offsetWidth;
-    cookie.classList.add("clicked");
-
-    let floatText = document.createElement("div");
-    floatText.innerText = "+1";
-    floatText.classList.add("floating");
-
-    document.getElementById("game").appendChild(floatText);
-
-    let rect = cookie.getBoundingClientRect();
-    let gameRect = document.getElementById("game").getBoundingClientRect();
-
-    floatText.style.left = (rect.left - gameRect.left + 80) + "px";
-    floatText.style.top = (rect.top - gameRect.top + 80) + "px";
-
-    setTimeout(() => {
-        floatText.remove();
-    }, 800);
-
-    updateScreen();
+    totalClicks++;
+    totalCookiesBaked++;
 }
 
+/* =========================
+   SHOP PURCHASES
+========================= */
+
 function buyCursor() {
-    if (cookies >= cursor.cost) {
-        cookies -= cursor.cost;
-        cursor.owned += 1;
-
-        cookiesPerSecond += cursor.cps;
-        cursor.cost = Math.floor(cursor.cost * 1.2);
-
-        updateScreen();
-    }
+    ...
 }
 
 function buyGrandma() {
-    if (cookies >= grandma.cost) {
-        cookies -= grandma.cost;
-        grandma.owned += 1;
-
-        cookiesPerSecond += grandma.cps;
-        grandma.cost = Math.floor(grandma.cost * 1.2);
-
-        updateScreen();
-    }
+    ...
 }
+
+/* =========================
+   AUTOMATIC COOKIE GENERATION
+========================= */
 
 setInterval(function() {
     cookies += cookiesPerSecond;
     updateScreen();
 }, 1000);
 
+cookies += cookiesPerSecond;
+totalCookiesBaked += cookiesPerSecond;
+
+setInterval(function() {
+    playTime++;
+}, 1000);
+
+/* =========================
+   AUTO SAVE
+========================= */
 
 loadGame();
-
 
 setInterval(saveGame, 5000);
 
