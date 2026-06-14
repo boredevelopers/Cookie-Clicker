@@ -27,7 +27,7 @@
             padding-top: 80px;
         }
 
-        /* TOP BAR FIXED */
+        /* TOP BAR */
         #topBar {
             position: fixed;
             top: 10px;
@@ -72,6 +72,11 @@
             cursor: pointer;
         }
 
+        button:hover {
+            transform: scale(1.05);
+            transition: 0.1s;
+        }
+
         .floating {
             position: absolute;
             color: white;
@@ -107,7 +112,6 @@
     <p id="cookieCount">Cookies: 0</p>
 
     <p id="stats"></p>
-
 </div>
 
 <!-- SHOP -->
@@ -140,7 +144,7 @@ let playTime = 0;
 
 let shopOpen = false;
 
-/* SHOP TOGGLE */
+/* SHOP */
 function toggleShop() {
     shopOpen = !shopOpen;
     document.getElementById("shop").classList.toggle("open");
@@ -185,11 +189,33 @@ function updateScreen() {
         `Clicks: ${totalClicks} | Total Cookies: ${totalCookies} | Time: ${playTime}s`;
 }
 
-/* CLICK */
+/* CLICK COOKIE */
 function clickCookie() {
     cookies++;
     totalClicks++;
     totalCookies++;
+
+    let cookie = document.getElementById("cookie");
+
+    cookie.classList.remove("clicked");
+    void cookie.offsetWidth;
+    cookie.classList.add("clicked");
+
+    // floating text
+    let floatText = document.createElement("div");
+    floatText.innerText = "+1";
+    floatText.classList.add("floating");
+
+    document.getElementById("game").appendChild(floatText);
+
+    let rect = cookie.getBoundingClientRect();
+    let gameRect = document.getElementById("game").getBoundingClientRect();
+
+    floatText.style.left = (rect.left - gameRect.left + 80) + "px";
+    floatText.style.top = (rect.top - gameRect.top + 80) + "px";
+
+    setTimeout(() => floatText.remove(), 800);
+
     updateScreen();
 }
 
@@ -214,15 +240,17 @@ function buyGrandma() {
     }
 }
 
-/* LOOP */
+/* CPS LOOP */
 setInterval(() => {
     cookies += cookiesPerSecond;
     totalCookies += cookiesPerSecond;
     updateScreen();
 }, 1000);
 
+/* PLAY TIME */
 setInterval(() => playTime++, 1000);
 
+/* AUTO SAVE */
 setInterval(saveGame, 5000);
 
 /* START */
