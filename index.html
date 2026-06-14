@@ -16,7 +16,7 @@
 
         body {
             background-color: chocolate;
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             color: white;
             margin: 0;
         }
@@ -102,7 +102,6 @@
 
 <!-- GAME -->
 <div id="game">
-
     <img id="cookie"
     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBjR56NYPaPmWCSxTuyLyzt77zyYvVSMI6A&s"
     onclick="clickCookie()"
@@ -110,7 +109,6 @@
     alt="cookie">
 
     <p id="cookieCount">Cookies: 0</p>
-
     <p id="stats"></p>
 </div>
 
@@ -130,7 +128,6 @@
 </div>
 
 <script>
-
 /* GAME STATE */
 let cookies = 0;
 let cookiesPerSecond = 0;
@@ -176,8 +173,7 @@ function loadGame() {
 
 /* UI */
 function updateScreen() {
-    document.getElementById("cookieCount").innerText =
-        "Cookies: " + cookies;
+    document.getElementById("cookieCount").innerText = "Cookies: " + cookies;
 
     document.getElementById("cursorInfo").innerText =
         `Owned: ${cursor.owned} | Cost: ${cursor.cost} | +${cursor.cps}/sec`;
@@ -198,10 +194,10 @@ function clickCookie() {
     let cookie = document.getElementById("cookie");
 
     cookie.classList.remove("clicked");
-    void cookie.offsetWidth;
+    void cookie.offsetWidth; // Trigger reflow to restart animation
     cookie.classList.add("clicked");
 
-    // floating text
+    // Floating text
     let floatText = document.createElement("div");
     floatText.innerText = "+1";
     floatText.classList.add("floating");
@@ -219,7 +215,7 @@ function clickCookie() {
     updateScreen();
 }
 
-/* BUY */
+/* BUY MECHANICS */
 function buyCursor() {
     if (cookies >= cursor.cost) {
         cookies -= cursor.cost;
@@ -240,23 +236,27 @@ function buyGrandma() {
     }
 }
 
-/* CPS LOOP */
+/* TIMERS & BACKGROUND LOOPS */
+// Fixed typo here: changed 1000l() to 1000);
 setInterval(() => {
     cookies += cookiesPerSecond;
     totalCookies += cookiesPerSecond;
     updateScreen();
-}, 1000l()
-/* PLAY TIME */
-setInterval) => playTime++, 1000);
+}, 1000);
+
+// Fixed typo here: added opening wrapper syntax to the interval call
+setInterval(() => {
+    playTime++;
+    updateScreen(); // Kept screen refreshed as time steps up
+}, 1000);
 
 /* AUTO SAVE */
 setInterval(saveGame, 5000);
 
-/* START */
+/* INITIALIZATION */
 loadGame();
 updateScreen();
-
 </script>
 
 </body>
-</html>    
+</html>
