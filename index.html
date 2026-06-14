@@ -24,6 +24,7 @@
         #game {
             text-align: center;
             position: relative;
+            padding-top: 60px;
         }
 
         #shop {
@@ -39,8 +40,7 @@
             transition: right 0.3s ease;
         }
 
-
-        #shop.open{
+        #shop.open {
             right: 0;
         }
 
@@ -48,7 +48,6 @@
             position: fixed;
             top: 10px;
             right: 10px;
-            width: auto;
             z-index: 1000;
         }
 
@@ -79,8 +78,10 @@
 
 <body>
 
+<!-- SHOP BUTTON -->
+<button id="shopButton" onclick="toggleShop()">☰ Shop</button>
 
-<button id="shopButton" onclick="toggleShop()">☰Shop</button>
+<!-- SAVE BUTTON -->
 <button onclick="saveGame()">Save Game</button>
 
 <div id="game">
@@ -94,8 +95,10 @@
     <p id="cookieCount">Cookies: 0</p>
 
     <p id="stats"></p>
+
 </div>
 
+<!-- SHOP -->
 <div id="shop">
     <h2>Shop</h2>
 
@@ -111,27 +114,9 @@
 </div>
 
 <script>
-    
-    <div id="shop">
-    let shopOpen = false;
-
-
-    function toggleShop() {
-        shopOpen = !shopOpen;
-
-
-        let shop = document.getElementById("shop");
-
-
-        if (shopOpen) {
-            shop.classList.add("open");
-        } else {
-            shop.classList.add("open");
-        }
-    }
 
 /* =========================
-   GAME VARIABLES
+   GAME STATE
 ========================= */
 let cookies = 0;
 let cookiesPerSecond = 0;
@@ -142,6 +127,16 @@ let grandma = { cost: 100, owned: 0, cps: 5 };
 let totalClicks = 0;
 let totalCookies = 0;
 let playTime = 0;
+
+let shopOpen = false;
+
+/* =========================
+   SHOP TOGGLE
+========================= */
+function toggleShop() {
+    shopOpen = !shopOpen;
+    document.getElementById("shop").classList.toggle("open");
+}
 
 /* =========================
    SAVE / LOAD
@@ -186,7 +181,7 @@ function updateScreen() {
 }
 
 /* =========================
-   CLICK COOKIE
+   COOKIE CLICK
 ========================= */
 function clickCookie() {
     cookies++;
@@ -245,7 +240,7 @@ setInterval(() => {
 ========================= */
 setInterval(saveGame, 5000);
 
-/* START */
+/* START GAME */
 loadGame();
 updateScreen();
 
