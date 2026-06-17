@@ -56,6 +56,7 @@
         }
 
         #tree, #rock {
+            image-rendering: pixelated;
             width: 180px;
             cursor: pointer;
             margin: 10px;
@@ -106,6 +107,13 @@
 let wood = 0;
 let stone = 0;
 
+
+let huts = 0;
+let villagers = 0;
+
+
+let villagerCost =30;
+
 let woodPerSecond = 0;
 let stonePerSecond = 0;
 
@@ -116,12 +124,12 @@ let miner = { cost: 25, owned: 0, cps: 1 }; // Costs wood, produces stone
 let playTime = 0;
 
 /* CLICK */
-function clickTree() {
+function gatherWood() {
     wood++;
     updateScreen();
 }
 
-function clickRock() {
+function gatherStone() {
     stone++;
     updateScreen();
 }
@@ -218,7 +226,7 @@ function loadGame() {
         playTime = Number(localStorage.getItem("playTime")) || 0;
     }
 }
-    
+
 /* START */
 loadGame();
 updateScreen();
