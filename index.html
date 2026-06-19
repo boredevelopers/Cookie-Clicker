@@ -24,13 +24,12 @@
         }
 
         #game {
-            /* Full screen island environment as seen in image_4822e2.png */
             background: linear-gradient(
                 to bottom,
                 #87ceeb 0%,
                 #87ceeb 55%,
                 #3cb371 55%,
-                #2e8b57 100__
+                #2e8b57 100%
             );
             display: block;
         }
@@ -77,25 +76,25 @@
             transition: .15s;
         }
 
-        .object:hover {
-            transform: scale(1.05);
-        }
-
+        /* FULL SCREEN TREE BACKGROUND SETUP */
         #tree {
-            width: 280px;
-            left: 50%;
+            width: 100vw;
+            height: 45vh; /* Fits perfectly within the lower green grass zone */
+            left: 0;
             top: 55%;
-            transform: translate(-50%, -50%);
+            object-fit: contain; /* Prevents distortion while stretching full width */
         }
+        
         #tree:hover {
-            transform: translate(-50%, -50%) scale(1.05);
+            transform: scale(1.02);
         }
 
         #teleporter {
             width: 130px;
-            left: 75%;
+            left: 80%;
             top: 65%;
             display: none;
+            z-index: 10;
         }
 
         #quarryMiner {
@@ -111,7 +110,7 @@
         }
 
         /* =========================
-        SHOP (Hidden by default)
+        SHOP
         ========================= */
         #shop {
             display: none; 
@@ -140,6 +139,7 @@
             border-radius: 4px;
             pointer-events: none;
             line-height: 1.5;
+            z-index: 10;
         }
 
         .floating {
@@ -170,24 +170,18 @@
         <button onclick="saveGame()">Save</button>
     </div>
 
-    <!-- MAIN ISLAND VIEW -->
     <div id="game">
-        <!-- Main interacting node -->
         <img id="tree" class="object" src="assets/tree.png" onclick="gatherWood(event)">
-        <!-- Teleporter (Only costs/unlocks at 250 wood) -->
         <img id="teleporter" class="object" src="assets/teleporter.png" onclick="enterQuarry()">
-        
         <div id="stats"></div>
     </div>
 
-    <!-- QUARRY VIEW (Stone ONLY exists here) -->
     <div id="quarry">
         <img id="quarryMiner" src="assets/miner.png" onclick="mineStone(event)">
         <div id="quarryStats"></div>
         <button onclick="leaveQuarry()" style="position: absolute; bottom: 20px; left: 20px;">Return to Island</button>
     </div>
 
-    <!-- SHOP PANEL (Hidden before unlock) -->
     <div id="shop">
         <h2>Shop 🛒</h2>
         <hr>
@@ -217,19 +211,16 @@
         UNLOCK CHECKER
         ========================= */
         function checkUnlock() {
-            // Teleporter costs/requires 250 wood & unlocks shop simultaneously
             if (wood >= 250 && !tpUnlocked) {
                 tpUnlocked = true;
-                
                 document.getElementById("teleporter").style.display = "block";
                 document.getElementById("shop").style.display = "block";
-                
                 popup("Teleporter & Shop Unlocked!", window.innerWidth / 2, window.innerHeight / 2);
             }
         }
 
         /* =========================
-        NAVIGATION
+        ... (Rest of navigation, stone, popup, update, and storage methods remain identical) ...
         ========================= */
         function enterQuarry() {
             document.getElementById("game").style.display = "none";
@@ -245,18 +236,12 @@
             update();
         }
 
-        /* =========================
-        STONE RESOURCE (Quarry Only)
-        ========================= */
         function mineStone(event) {
             stone++;
             popup("+1 Stone", event.clientX, event.clientY);
             update();
         }
 
-        /* =========================
-        UI FLOATING POPUP
-        ========================= */
         function popup(text, x, y) {
             let p = document.createElement("div");
             p.innerText = text;
@@ -264,15 +249,9 @@
             p.style.left = x + "px";
             p.style.top = y + "px";
             document.body.appendChild(p);
-
-            setTimeout(() => {
-                p.remove();
-            }, 1000);
+            setTimeout(() => { p.remove(); }, 1000);
         }
 
-        /* =========================
-        UI RENDER ENGINE
-        ========================= */
         function update() {
             if (currentArea === "Island") {
                 document.getElementById("stats").innerHTML = `
@@ -290,9 +269,6 @@
             }
         }
 
-        /* =========================
-        LOCAL STORAGE SYSTEM
-        ========================= */
         function saveGame() {
             localStorage.setItem("wood", wood);
             localStorage.setItem("stone", stone);
@@ -314,7 +290,6 @@
             }
         }
 
-        // Initialize Engine
         loadGame();
         update();
     </script>
