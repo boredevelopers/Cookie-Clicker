@@ -2,759 +2,321 @@
 <html>
 
 <head>
-
-<title>Island Builder</title>
-
-
-<style>
-
-
-body{
-
-margin:0;
-font-family:Arial;
-color:white;
-overflow:hidden;
-
-}
-
-
-
-/* =========================
-WORLD
-========================= */
-
-
-#game{
-
-
-width:100vw;
-height:100vh;
-
-position:relative;
-
-
-background:
-
-linear-gradient(
-
-to bottom,
-
-#87ceeb 0%,
-#87ceeb 55%,
-#3cb371 55%,
-#2e8b57 100%
-
-);
-
-
-}
-
-
-
-/* =========================
-TOP BAR
-========================= */
-
-
-#topBar{
-
-
-position:fixed;
-
-top:10px;
-right:10px;
-
-z-index:1000;
-
-
-}
-
-
-
-button{
-
-
-padding:8px;
-
-cursor:pointer;
-
-
-}
-
-
-
-/* =========================
-OBJECTS
-========================= */
-
-
-.object{
-
-
-position:absolute;
-
-image-rendering:pixelated;
-
-cursor:pointer;
-
-transition:.15s;
-
-
-}
-
-
-
-.object:hover{
-
-transform:scale(1.1);
-
-}
-
-
-
-#tree{
-
-
-width:280px;
-
-left:35%;
-
-top:45%;
-
-
-}
-
-
-
-
-#teleporter{
-
-
-width:130px;
-
-left:50%;
-
-top:70%;
-
-
-display:none;
-
-
-}
-
-
-
-
-
-/* =========================
-QUARRY
-========================= */
-
-
-#quarry{
-
-
-display:none;
-
-
-width:100vw;
-
-height:100vh;
-
-
-background:
-
-
-linear-gradient(
-
-to bottom,
-
-#777,
-
-#222
-
-);
-
-
-position:absolute;
-
-
-
-}
-
-
-
-#quarryMiner{
-
-
-position:absolute;
-
-width:220px;
-
-left:45%;
-
-top:45%;
-
-
-cursor:pointer;
-
-
-}
-
-
-
-/* =========================
-SHOP
-========================= */
-
-
-#shop{
-
-
-display:none;
-
-
-position:fixed;
-
-right:0;
-
-top:0;
-
-width:240px;
-
-height:100vh;
-
-
-background:#f5e0b7;
-
-color:black;
-
-padding:15px;
-
-
-}
-
-
-
-/* =========================
-TEXT
-========================= */
-
-
-#stats{
-
-
-position:absolute;
-
-top:20px;
-
-left:20px;
-
-
-background:rgba(0,0,0,.4);
-
-padding:10px;
-
-
-}
-
-
-
-.floating{
-
-
-position:absolute;
-
-animation:float 1s forwards;
-
-
-}
-
-
-
-@keyframes float{
-
-
-from{
-
-opacity:1;
-transform:translateY(0);
-
-}
-
-
-to{
-
-opacity:0;
-transform:translateY(-60px);
-
-
-}
-
-
-}
-
-
-
-</style>
-
-
+    <title>Island Builder</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+            background-color: #2e8b57;
+        }
+
+        /* =========================
+        WORLD & VIEWS
+        ========================= */
+        #game, #quarry {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #game {
+            /* Full screen island environment as seen in image_4822e2.png */
+            background: linear-gradient(
+                to bottom,
+                #87ceeb 0%,
+                #87ceeb 55%,
+                #3cb371 55%,
+                #2e8b57 100__
+            );
+            display: block;
+        }
+
+        #quarry {
+            display: none;
+            background: linear-gradient(
+                to bottom,
+                #777,
+                #222
+            );
+        }
+
+        /* =========================
+        TOP BAR
+        ========================= */
+        #topBar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+            background: #fff;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #eee;
+        }
+
+        /* =========================
+        OBJECTS
+        ========================= */
+        .object {
+            position: absolute;
+            image-rendering: pixelated;
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .object:hover {
+            transform: scale(1.05);
+        }
+
+        #tree {
+            width: 280px;
+            left: 50%;
+            top: 55%;
+            transform: translate(-50%, -50%);
+        }
+        #tree:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        #teleporter {
+            width: 130px;
+            left: 75%;
+            top: 65%;
+            display: none;
+        }
+
+        #quarryMiner {
+            position: absolute;
+            width: 220px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        #quarryMiner:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        /* =========================
+        SHOP (Hidden by default)
+        ========================= */
+        #shop {
+            display: none; 
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #f5e0b7;
+            color: black;
+            padding: 15px;
+            box-sizing: border-box;
+            z-index: 999;
+            border-left: 3px solid #d4b887;
+        }
+
+        /* =========================
+        TEXT & UI
+        ========================= */
+        #stats, #quarryStats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, .4);
+            padding: 10px;
+            border-radius: 4px;
+            pointer-events: none;
+            line-height: 1.5;
+        }
+
+        .floating {
+            position: absolute;
+            animation: float 1s forwards;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        @keyframes float {
+            from {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+            to {
+                opacity: 0;
+                transform: translate(-50%, -80px);
+            }
+        }
+    </style>
 </head>
-
-
 
 <body>
 
-
-
-<div id="topBar">
-
-
-<button onclick="saveGame()">
-
-Save
-
-</button>
-
-
-</div>
-
-
-
-
-
-
-<div id="game">
-
-
-<img id="tree"
-
-class="object"
-
-src="assets/tree.png"
-
-onclick="gatherWood()">
-
-
-<img id="teleporter"
-
-class="object"
-
-src="assets/teleporter.png"
-
-onclick="enterQuarry()">
-
-
-
-<div id="stats"></div>
-
-
-</div>
-
-
-
-
-
-<div id="quarry">
-
-
-<img id="quarryMiner"
-
-src="assets/miner.png"
-
-onclick="mineStone()">
-
-
-
-<div id="quarryStats"></div>
-
-
-</div>
-
-
-
-
-
-
-<div id="shop">
-
-
-<h2>Shop</h2>
-
-
-<p>
-
-Future upgrades here
-
-</p>
-
-
-</div>
-
-
-
-
-
-<script>
-
-
-
-/* =========================
-STATE
-========================= */
-
-
-let wood=0;
-
-let stone=0;
-
-
-let tpUnlocked=false;
-
-
-let shopUnlocked=false;
-
-
-let currentArea="Island";
-
-
-
-
-
-/* =========================
-WOOD
-========================= */
-
-
-function gatherWood(){
-
-
-wood++;
-
-
-popup("+1 Wood");
-
-
-checkUnlock();
-
-
-update();
-
-
-}
-
-
-
-
-
-
-/* =========================
-TELEPORTER
-========================= */
-
-
-function checkUnlock(){
-
-
-if(
-
-wood>=250
-
-&&
-
-!tpUnlocked
-
-){
-
-
-tpUnlocked=true;
-
-
-shopUnlocked=true;
-
-
-
-document.getElementById("teleporter")
-
-.style.display="block";
-
-
-
-document.getElementById("shop")
-
-.style.display="block";
-
-
-
-popup("Teleporter Unlocked!");
-
-
-
-}
-
-
-}
-
-
-
-
-
-function enterQuarry(){
-
-
-document.getElementById("game")
-
-.style.display="none";
-
-
-
-document.getElementById("quarry")
-
-.style.display="block";
-
-
-currentArea="Quarry";
-
-
-update();
-
-
-
-}
-
-
-
-
-
-/* =========================
-STONE
-========================= */
-
-
-function mineStone(){
-
-
-stone++;
-
-
-popup("+1 Stone");
-
-
-update();
-
-
-}
-
-
-
-
-
-/* =========================
-POPUP
-========================= */
-
-
-function popup(text){
-
-
-let p=document.createElement("div");
-
-
-p.innerText=text;
-
-
-p.className="floating";
-
-
-p.style.left="50%";
-
-p.style.top="50%";
-
-
-document.body.appendChild(p);
-
-
-
-setTimeout(()=>{
-
-
-p.remove();
-
-
-},1000);
-
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-UI
-========================= */
-
-
-function update(){
-
-
-if(currentArea==="Island"){
-
-
-document.getElementById("stats")
-
-.innerHTML=
-
-`
-
-Area: Island 🌴
-
-<br>
-
-Wood: ${wood}
-
-<br>
-
-Stone: ${stone}
-
-<br><br>
-
-${!tpUnlocked?
-
-"Need 250 Wood for Teleporter"
-
-:
-
-"Teleporter unlocked!"
-
-}
-
-
-`;
-
-
-
-}
-
-
-
-else{
-
-
-document.getElementById("quarryStats")
-
-.innerHTML=
-
-`
-
-Area: Quarry 🪨
-
-<br>
-
-Wood: ${wood}
-
-<br>
-
-Stone: ${stone}
-
-`;
-
-
-
-}
-
-
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-SAVE
-========================= */
-
-
-function saveGame(){
-
-
-localStorage.setItem("wood",wood);
-
-localStorage.setItem("stone",stone);
-
-localStorage.setItem("tp",tpUnlocked);
-
-
-alert("Saved!");
-
-}
-
-
-
-function loadGame(){
-
-
-wood=
-
-Number(localStorage.getItem("wood"))
-
-||0;
-
-
-
-stone=
-
-Number(localStorage.getItem("stone"))
-
-||0;
-
-
-
-tpUnlocked=
-
-localStorage.getItem("tp")
-
-==="true";
-
-
-
-if(tpUnlocked){
-
-
-document.getElementById("teleporter")
-
-.style.display="block";
-
-
-document.getElementById("shop")
-
-.style.display="block";
-
-
-}
-
-
-}
-
-
-
-loadGame();
-
-update();
-
-
-
-</script>
-
-
+    <div id="topBar">
+        <button onclick="saveGame()">Save</button>
+    </div>
+
+    <!-- MAIN ISLAND VIEW -->
+    <div id="game">
+        <!-- Main interacting node -->
+        <img id="tree" class="object" src="assets/tree.png" onclick="gatherWood(event)">
+        <!-- Teleporter (Only costs/unlocks at 250 wood) -->
+        <img id="teleporter" class="object" src="assets/teleporter.png" onclick="enterQuarry()">
+        
+        <div id="stats"></div>
+    </div>
+
+    <!-- QUARRY VIEW (Stone ONLY exists here) -->
+    <div id="quarry">
+        <img id="quarryMiner" src="assets/miner.png" onclick="mineStone(event)">
+        <div id="quarryStats"></div>
+        <button onclick="leaveQuarry()" style="position: absolute; bottom: 20px; left: 20px;">Return to Island</button>
+    </div>
+
+    <!-- SHOP PANEL (Hidden before unlock) -->
+    <div id="shop">
+        <h2>Shop 🛒</h2>
+        <hr>
+        <p>Future upgrades here</p>
+    </div>
+
+    <script>
+        /* =========================
+        STATE
+        ========================= */
+        let wood = 0;
+        let stone = 0;
+        let tpUnlocked = false;
+        let currentArea = "Island";
+
+        /* =========================
+        WOOD RESOURCE
+        ========================= */
+        function gatherWood(event) {
+            wood++;
+            popup("+1 Wood", event.clientX, event.clientY);
+            checkUnlock();
+            update();
+        }
+
+        /* =========================
+        UNLOCK CHECKER
+        ========================= */
+        function checkUnlock() {
+            // Teleporter costs/requires 250 wood & unlocks shop simultaneously
+            if (wood >= 250 && !tpUnlocked) {
+                tpUnlocked = true;
+                
+                document.getElementById("teleporter").style.display = "block";
+                document.getElementById("shop").style.display = "block";
+                
+                popup("Teleporter & Shop Unlocked!", window.innerWidth / 2, window.innerHeight / 2);
+            }
+        }
+
+        /* =========================
+        NAVIGATION
+        ========================= */
+        function enterQuarry() {
+            document.getElementById("game").style.display = "none";
+            document.getElementById("quarry").style.display = "block";
+            currentArea = "Quarry";
+            update();
+        }
+
+        function leaveQuarry() {
+            document.getElementById("quarry").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            currentArea = "Island";
+            update();
+        }
+
+        /* =========================
+        STONE RESOURCE (Quarry Only)
+        ========================= */
+        function mineStone(event) {
+            stone++;
+            popup("+1 Stone", event.clientX, event.clientY);
+            update();
+        }
+
+        /* =========================
+        UI FLOATING POPUP
+        ========================= */
+        function popup(text, x, y) {
+            let p = document.createElement("div");
+            p.innerText = text;
+            p.className = "floating";
+            p.style.left = x + "px";
+            p.style.top = y + "px";
+            document.body.appendChild(p);
+
+            setTimeout(() => {
+                p.remove();
+            }, 1000);
+        }
+
+        /* =========================
+        UI RENDER ENGINE
+        ========================= */
+        function update() {
+            if (currentArea === "Island") {
+                document.getElementById("stats").innerHTML = `
+                    Area: Island 🌴<br>
+                    Wood: ${wood}<br>
+                    Stone: ${stone}<br><br>
+                    ${!tpUnlocked ? "Need 250 Wood for Teleporter" : "Teleporter unlocked!"}
+                `;
+            } else {
+                document.getElementById("quarryStats").innerHTML = `
+                    Area: Quarry 🪨<br>
+                    Wood: ${wood}<br>
+                    Stone: ${stone}
+                `;
+            }
+        }
+
+        /* =========================
+        LOCAL STORAGE SYSTEM
+        ========================= */
+        function saveGame() {
+            localStorage.setItem("wood", wood);
+            localStorage.setItem("stone", stone);
+            localStorage.setItem("tp", tpUnlocked);
+            alert("Game Progress Saved!");
+        }
+
+        function loadGame() {
+            wood = Number(localStorage.getItem("wood")) || 0;
+            stone = Number(localStorage.getItem("stone")) || 0;
+            tpUnlocked = localStorage.getItem("tp") === "true";
+
+            if (tpUnlocked) {
+                document.getElementById("teleporter").style.display = "block";
+                document.getElementById("shop").style.display = "block";
+            } else {
+                document.getElementById("teleporter").style.display = "none";
+                document.getElementById("shop").style.display = "none";
+            }
+        }
+
+        // Initialize Engine
+        loadGame();
+        update();
+    </script>
 </body>
-
 </html>
