@@ -322,7 +322,6 @@ button:disabled {
     border-radius:8px;
     z-index:50;
     display:none;
-    animation:slideInRight 0.4s ease-out;
     transition:0.2s;
 }
 
@@ -646,28 +645,35 @@ function clickMiner(){
 ========================= */
 
 function unlockTeleporter(){
-  if(
-    state.wood >= 250 &&
-    !state.teleporterUnlocked
-  ){
-    state.wood -= 250;
-    state.teleporterUnlocked = true;
-    state.shopUnlocked = true;
-    
-    state.inventory.push({
-      id: 'teleporter',
-      name: '🚪 Teleporter',
-      description: 'Travel to Quarry',
-      type: 'travel'
-    });
-    
-    document.getElementById("teleporter").style.display = "block";
-    document.getElementById("quarryBtn").style.display = "inline-block";
-    document.getElementById("shopButton").style.display = "block";
-    alert("Teleporter & Shop unlocked!");
-    updateBackpack();
-    update();
+  console.log("Clicked unlock! Wood:", state.wood, "Unlocked:", state.teleporterUnlocked);
+  
+  if(state.wood < 250) {
+    alert("You need 250 Wood! Currently have: " + Math.floor(state.wood));
+    return;
   }
+  
+  if(state.teleporterUnlocked) {
+    alert("Teleporter already unlocked!");
+    return;
+  }
+  
+  state.wood -= 250;
+  state.teleporterUnlocked = true;
+  state.shopUnlocked = true;
+  
+  state.inventory.push({
+    id: 'teleporter',
+    name: '🚪 Teleporter',
+    description: 'Travel to Quarry',
+    type: 'travel'
+  });
+  
+  document.getElementById("teleporter").style.display = "block";
+  document.getElementById("quarryBtn").style.display = "inline-block";
+  document.getElementById("shopButton").style.display = "block";
+  alert("✅ Teleporter & Shop Unlocked! Check your backpack!");
+  updateBackpack();
+  update();
 }
 
 function useTeleporter(){
