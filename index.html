@@ -18,12 +18,9 @@ body {
 ========================= */
 
 #game {
-
     width:100vw;
     height:100vh;
-
     position:relative;
-
     background:
     linear-gradient(
         to bottom,
@@ -34,24 +31,34 @@ body {
     );
 }
 
+#quarry {
+    display:none;
+    width:100vw;
+    height:100vh;
+    background:
+    linear-gradient(
+        to bottom,
+        #555,
+        #222
+    );
+    position:absolute;
+    z-index:100;
+}
+
 
 /* =========================
    TOP BAR
 ========================= */
 
 #topBar {
-
     position:fixed;
     top:10px;
     right:10px;
-
     z-index:1000;
-
 }
 
 
 button {
-
     cursor:pointer;
     padding:8px;
     background:rgba(0,0,0,0.3);
@@ -77,255 +84,54 @@ button:disabled {
 ========================= */
 
 .object {
-
     position:absolute;
-
     image-rendering:pixelated;
-
     cursor:pointer;
-
     transition:0.15s;
-
 }
-
 
 .object:hover {
-
     transform:scale(1.1);
-
 }
-
 
 #tree {
-
     width:100vw;
     height:100vh;
-
     left:0;
     top:0;
-
 }
 
-
-#rock {
-
-    width:180px;
-
-    left:50%;
-    top:50%;
-
-}
-
-
-/* TELEPORTER */
-
-#teleporter {
-
-    width:120px;
-
-    left:50%;
-    top:70%;
-
-}
-
-
-/* =========================
-   QUARRY
-========================= */
-
-#quarry {
-
-    display:none;
-
-    width:100vw;
-    height:100vh;
-
-    background:
-
-    linear-gradient(
-        to bottom,
-        #555,
-        #222
-    );
-
+#quarryBg {
+    width:100%;
+    height:100%;
     position:absolute;
-    z-index:100;
-
+    z-index:-1;
 }
-
 
 #miner {
-
-    width:220px;
-
+    width:200px;
     position:absolute;
-
-    left:45%;
-    top:45%;
-
+    left:15%;
+    top:50%;
+    transform:translateY(-50%);
 }
 
-
-
-/* =========================
-   TEXT
-========================= */
-
-
-#stats {
-
+#rock {
+    width:180px;
     position:absolute;
-
-    top:70px;
-    left:20px;
-
-    background:rgba(0,0,0,0.4);
-
-    padding:10px;
-
+    right:20%;
+    top:50%;
+    transform:translateY(-50%);
 }
 
-
-.floating {
-
+#teleporter {
+    width:120px;
     position:absolute;
-
-    animation:float 1s forwards;
-
-}
-
-
-
-@keyframes float {
-
-    from {
-
-        opacity:1;
-        transform:translateY(0);
-
-    }
-
-    to {
-
-        opacity:0;
-        transform:translateY(-60px);
-
-    }
-
-}
-
-/* =========================
-   SHOP
-========================= */
-
-/* =========================
-   SHOP PANEL
-========================= */
-
-#shopPanel {
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:rgba(0,0,0,0.6);
-    border:1px solid rgba(100,200,255,0.5);
-    padding:16px;
-    border-radius:8px;
-    width:300px;
-    max-height:500px;
-    overflow-y:auto;
-    z-index:50;
+    left:50%;
+    top:70%;
     display:none;
 }
 
-/* =========================
-   SHOP BUTTON
-========================= */
-
-#shopButton {
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    padding:12px 20px;
-    background:rgba(100,200,255,0.3);
-    border:2px solid rgba(100,200,255,0.7);
-    color:#87CEEB;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-    border-radius:8px;
-    z-index:50;
-    display:none;
-    animation:slideInRight 0.4s ease-out;
-    transition:0.2s;
-}
-
-#shopButton:hover {
-    background:rgba(100,200,255,0.6);
-    border:2px solid #87CEEB;
-}
-
-@keyframes slideInRight {
-    from {
-        opacity:0;
-        transform:translateX(300px);
-    }
-    to {
-        opacity:1;
-        transform:translateX(0);
-    }
-}
-
-.shopTitle {
-    font-size:16px;
-    font-weight:bold;
-    margin-bottom:12px;
-    color:#4DD0FF;
-}
-
-.shopItem {
-    background:rgba(0,0,0,0.3);
-    padding:10px;
-    margin:8px 0;
-    border-radius:4px;
-    border-left:3px solid #4DD0FF;
-    font-size:12px;
-}
-
-.itemName {
-    font-weight:bold;
-    color:#fff;
-    margin-bottom:4px;
-}
-
-.itemCost {
-    font-size:11px;
-    color:#aaa;
-    margin-bottom:6px;
-}
-
-.itemButton {
-    width:100%;
-    padding:6px;
-    margin:0;
-    font-size:12px;
-}
-
-/* =========================
-   LOCATION BUTTONS
-========================= */
-
-.locButton {
-    padding:8px 16px;
-    margin:0 4px;
-    background:rgba(100,150,200,0.3);
-    border:1px solid rgba(100,150,200,0.7);
-    color:#87CEEB;
-}
-
-.locButton.active {
-    background:rgba(100,150,200,0.6);
-    border:1px solid #87CEEB;
-}
 
 /* =========================
    BACKPACK SYSTEM
@@ -342,6 +148,23 @@ button:disabled {
     border:1px solid rgba(255,255,255,0.5);
     cursor:pointer;
     border-radius:4px;
+}
+
+#backpackNotification {
+    position:absolute;
+    top:-8px;
+    right:-8px;
+    background:#FF6B6B;
+    color:white;
+    border-radius:50%;
+    width:24px;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:bold;
+    display:none;
 }
 
 #backpackMenu {
@@ -402,6 +225,243 @@ button:disabled {
     padding:20px;
 }
 
+
+/* =========================
+   TELEPORTER MODAL
+========================= */
+
+#teleportModal {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background:rgba(0,0,0,0.9);
+    border:2px solid #FFD700;
+    padding:30px;
+    border-radius:8px;
+    z-index:2000;
+    display:none;
+    text-align:center;
+    min-width:300px;
+}
+
+.modalTitle {
+    font-size:20px;
+    font-weight:bold;
+    color:#FFD700;
+    margin-bottom:20px;
+}
+
+.modalButton {
+    display:block;
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    background:rgba(255,215,0,0.3);
+    border:1px solid #FFD700;
+    color:#FFD700;
+    cursor:pointer;
+    border-radius:4px;
+    font-weight:bold;
+}
+
+.modalButton:hover {
+    background:rgba(255,215,0,0.5);
+}
+
+
+/* =========================
+   MINER MESSAGE
+========================= */
+
+#minerMessage {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background:rgba(0,0,0,0.9);
+    border:2px solid #8B4513;
+    padding:30px;
+    border-radius:8px;
+    z-index:2000;
+    display:none;
+    text-align:center;
+    min-width:300px;
+}
+
+.messageText {
+    font-size:16px;
+    margin-bottom:20px;
+    color:#FFD700;
+}
+
+.closeBtn {
+    padding:8px 16px;
+    background:rgba(0,0,0,0.4);
+    border:1px solid rgba(255,255,255,0.5);
+    color:white;
+    cursor:pointer;
+    border-radius:4px;
+}
+
+
+/* =========================
+   SHOP BUTTON & PANEL
+========================= */
+
+#shopButton {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    padding:12px 20px;
+    background:rgba(100,200,255,0.3);
+    border:2px solid rgba(100,200,255,0.7);
+    color:#87CEEB;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    border-radius:8px;
+    z-index:50;
+    display:none;
+    animation:slideInRight 0.4s ease-out;
+    transition:0.2s;
+}
+
+#shopButton:hover {
+    background:rgba(100,200,255,0.6);
+    border:2px solid #87CEEB;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity:0;
+        transform:translateX(300px);
+    }
+    to {
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity:1;
+        transform:translateX(0);
+    }
+    to {
+        opacity:0;
+        transform:translateX(300px);
+    }
+}
+
+#shopPanel {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:rgba(0,0,0,0.6);
+    border:1px solid rgba(100,200,255,0.5);
+    padding:16px;
+    border-radius:8px;
+    width:300px;
+    max-height:500px;
+    overflow-y:auto;
+    z-index:50;
+    display:none;
+    animation:slideInRight 0.4s ease-out;
+}
+
+#shopPanel.closing {
+    animation:slideOutRight 0.4s ease-out forwards;
+}
+
+.shopTitle {
+    font-size:16px;
+    font-weight:bold;
+    color:#4DD0FF;
+    margin-bottom:12px;
+}
+
+.shopItem {
+    background:rgba(0,0,0,0.3);
+    padding:10px;
+    margin:8px 0;
+    border-radius:4px;
+    border-left:3px solid #4DD0FF;
+    font-size:12px;
+}
+
+.itemName {
+    font-weight:bold;
+    color:#fff;
+    margin-bottom:4px;
+}
+
+.itemCost {
+    font-size:11px;
+    color:#aaa;
+    margin-bottom:6px;
+}
+
+.itemButton {
+    width:100%;
+    padding:6px;
+    margin:0;
+    font-size:12px;
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+#stats {
+    position:absolute;
+    top:70px;
+    left:20px;
+    background:rgba(0,0,0,0.4);
+    padding:10px;
+}
+
+
+/* =========================
+   LOCATION BUTTONS
+========================= */
+
+.locButton {
+    padding:8px 16px;
+    margin:0 4px;
+    background:rgba(100,150,200,0.3);
+    border:1px solid rgba(100,150,200,0.7);
+    color:#87CEEB;
+}
+
+.locButton.active {
+    background:rgba(100,150,200,0.6);
+    border:1px solid #87CEEB;
+}
+
+
+/* =========================
+   FLOATING TEXT
+========================= */
+
+.floating {
+    position:absolute;
+    animation:float 1s forwards;
+}
+
+@keyframes float {
+    from {
+        opacity:1;
+        transform:translateY(0);
+    }
+    to {
+        opacity:0;
+        transform:translateY(-60px);
+    }
+}
+
+
 /* =========================
    GENERATORS DISPLAY
 ========================= */
@@ -427,73 +487,52 @@ button:disabled {
 
 <body>
 
-<button id="backpackBtn" onclick="toggleBackpack()">🎒</button>
+<button id="backpackBtn" onclick="toggleBackpack()" style="position:relative;">
+    🎒
+    <div id="backpackNotification"></div>
+</button>
 
 <div id="backpackMenu">
-  <div class="backpackTitle">🎒 Backpack</div>
-  <div id="inventoryList"></div>
+    <div class="backpackTitle">🎒 Backpack</div>
+    <div id="inventoryList"></div>
+</div>
+
+<div id="teleportModal">
+    <div class="modalTitle">🚪 Teleporter</div>
+    <button class="modalButton" onclick="tpToQuarry()">Travel to Quarry</button>
+    <button class="modalButton" onclick="closeTeleportModal()" style="background:rgba(255,0,0,0.3); border-color:#FF6B6B; color:#FF6B6B;">Close</button>
+</div>
+
+<div id="minerMessage">
+    <div class="messageText" id="messageContent"></div>
+    <button class="closeBtn" onclick="closeMinerMessage()">Close</button>
 </div>
 
 <div id="topBar">
-
-<button onclick="saveGame()">💾 Save</button>
-<button id="islandBtn" class="locButton active" onclick="goToIsland()">Island</button>
-<button id="quarryBtn" class="locButton" onclick="goToQuarry()" style="display:none;">Quarry</button>
-
+    <button onclick="saveGame()">💾 Save</button>
+    <button id="islandBtn" class="locButton active" onclick="goToIsland()">Island</button>
+    <button id="quarryBtn" class="locButton" onclick="goToQuarry()" style="display:none;">Quarry</button>
 </div>
-
-
 
 <div id="game">
-
-
-<img id="tree"
-class="object"
-src="assets/tree.png"
-onclick="gatherWood()">
-
-
-
-<img id="teleporter"
-class="object"
-src="assets/teleporter.png"
-onclick="useTeleporter()"
-style="display:none;">
-
-
-
-<div id="stats"></div>
-
+    <img id="tree" class="object" src="assets/tree.png" onclick="gatherWood()">
+    <img id="teleporter" class="object" src="assets/teleporter.png" onclick="useTeleporter()">
+    <div id="stats"></div>
 </div>
-
-
-
 
 <div id="quarry">
-
-<img id="rock"
-class="object"
-src="assets/rock.png"
-onclick="gatherStone()">
-
-<img id="miner"
-src="assets/miner.png"
-onclick="mineStone()">
-
-</div>
-
-<div id="shopPanel">
-  <div class="shopTitle">🛒 Shop</div>
-  <div id="shopItems"></div>
+    <img id="miner" class="object" src="assets/miner.png" onclick="clickMiner()">
+    <img id="rock" class="object" src="assets/rock.png" onclick="gatherStone()">
 </div>
 
 <button id="shopButton" onclick="toggleShop()">🛒 Shop</button>
 
-
-
+<div id="shopPanel">
+    <div class="shopTitle">🛒 Shop</div>
+    <div id="shopItems"></div>
+</div>
 
 <script>
-
 
 /* =========================
    UPGRADES CONFIG
@@ -522,6 +561,13 @@ const UPGRADES = {
 
 const SHOP_UPGRADES = [
   { 
+    id: 'pickaxe', 
+    name: '⛏️ Pickaxe', 
+    description: 'Mine stone from the quarry',
+    baseCost: { wood: 50, stone: 0 },
+    effect: () => { state.pickaxeUnlocked = true; }
+  },
+  { 
     id: 'better-axe', 
     name: 'Better Axe', 
     description: 'Wood/click +0.5',
@@ -542,7 +588,6 @@ const SHOP_UPGRADES = [
    STATE
 ========================= */
 
-
 let state = {
   wood: 0,
   stone: 0,
@@ -553,6 +598,7 @@ let state = {
   miner: 0,
   teleporterUnlocked: false,
   shopUnlocked: false,
+  pickaxeUnlocked: false,
   locationName: "Island",
   location: "island",
   upgradePurchased: {},
@@ -569,7 +615,6 @@ let currentPlaytimeStr = "0s";
    RESOURCES
 ========================= */
 
-
 function gatherWood(){
   if(state.location === "island") {
     const amount = state.woodPerClick;
@@ -579,10 +624,8 @@ function gatherWood(){
   }
 }
 
-
-
 function gatherStone(){
-  if(state.location === "quarry") {
+  if(state.location === "quarry" && state.pickaxeUnlocked) {
     const amount = state.stonePerClick;
     state.stone += amount;
     showText("+"+amount.toFixed(1)+" Stone");
@@ -590,13 +633,11 @@ function gatherStone(){
   }
 }
 
-
-function mineStone(){
+function clickMiner(){
   if(state.location === "quarry") {
-    const amount = state.stonePerClick;
-    state.stone += amount;
-    showText("+"+amount.toFixed(1)+" Stone");
-    update();
+    if(!state.pickaxeUnlocked) {
+      showMinerMessage("The miner says: 'Buy a pickaxe from the shop to mine stone!'");
+    }
   }
 }
 
@@ -604,7 +645,6 @@ function mineStone(){
 /* =========================
    TELEPORTER
 ========================= */
-
 
 function unlockTeleporter(){
   if(
@@ -615,7 +655,6 @@ function unlockTeleporter(){
     state.teleporterUnlocked = true;
     state.shopUnlocked = true;
     
-    // Add teleporter to inventory
     state.inventory.push({
       id: 'teleporter',
       name: '🚪 Teleporter',
@@ -627,16 +666,26 @@ function unlockTeleporter(){
     document.getElementById("quarryBtn").style.display = "inline-block";
     document.getElementById("shopButton").style.display = "block";
     alert("Teleporter & Shop unlocked!");
+    updateBackpack();
     update();
   }
 }
 
-
 function useTeleporter(){
   if(state.teleporterUnlocked){
-    goToQuarry();
+    document.getElementById("teleportModal").style.display = "block";
   }
 }
+
+function tpToQuarry(){
+  closeTeleportModal();
+  goToQuarry();
+}
+
+function closeTeleportModal(){
+  document.getElementById("teleportModal").style.display = "none";
+}
+
 
 /* =========================
    BACKPACK SYSTEM
@@ -650,39 +699,36 @@ function toggleBackpack(){
 
 function updateBackpack(){
   const list = document.getElementById("inventoryList");
+  const notification = document.getElementById("backpackNotification");
   
   if(state.inventory.length === 0) {
     list.innerHTML = '<div class="emptyBackpack">Empty</div>';
-    return;
+    notification.style.display = "none";
+  } else {
+    notification.textContent = state.inventory.length;
+    notification.style.display = "flex";
+    list.innerHTML = state.inventory.map((item, idx) => `
+      <div class="inventoryItem">
+        <div style="font-weight:bold;">${item.name}</div>
+        <div style="font-size:11px; color:#aaa; margin:4px 0;">${item.description}</div>
+        <button class="itemUseBtn" onclick="useInventoryItem(${idx})">Use Item</button>
+      </div>
+    `).join('');
   }
-
-  list.innerHTML = state.inventory.map((item, idx) => `
-    <div class="inventoryItem">
-      <div style="font-weight:bold;">${item.name}</div>
-      <div style="font-size:11px; color:#aaa; margin:4px 0;">${item.description}</div>
-      <button class="itemUseBtn" onclick="useInventoryItem(${idx})">Use Item</button>
-    </div>
-  `).join('');
 }
 
 function useInventoryItem(idx){
   const item = state.inventory[idx];
   
   if(item.type === 'travel' && item.id === 'teleporter') {
-    goToQuarry();
-    state.backpackOpen = false;
-    document.getElementById("backpackMenu").style.display = "none";
+    document.getElementById("teleportModal").style.display = "block";
   }
 }
 
-function toggleShop(){
-  const panel = document.getElementById("shopPanel");
-  if(panel.style.display === "block") {
-    panel.style.display = "none";
-  } else {
-    panel.style.display = "block";
-  }
-}
+
+/* =========================
+   LOCATION SYSTEM
+========================= */
 
 function goToIsland(){
   state.location = "island";
@@ -712,42 +758,24 @@ function goToQuarry(){
 
 
 /* =========================
-   TEXT EFFECT
+   SHOP
 ========================= */
 
-
-function showText(text){
-  let t = document.createElement("div");
-  t.innerText = text;
-  t.className = "floating";
-  t.style.left = "50%";
-  t.style.top = "50%";
-  t.style.color = text.includes("Wood") ? "#8B4513" : "#A9A9A9";
-  t.style.fontWeight = "bold";
-  t.style.textShadow = "1px 1px 2px rgba(0,0,0,0.8)";
-  document.body.appendChild(t);
-
-  setTimeout(()=>{
-    t.remove();
-  },1000);
+function toggleShop(){
+  const panel = document.getElementById("shopPanel");
+  if(panel.style.display === "block") {
+    panel.classList.add("closing");
+    setTimeout(() => {
+      panel.style.display = "none";
+      panel.classList.remove("closing");
+    }, 400);
+  } else {
+    panel.style.display = "block";
+  }
 }
-
-
-/* =========================
-   GENERATORS
-========================= */
 
 function getCostForLevel(baseCost, level) {
   return Math.ceil(baseCost * Math.pow(1.15, level));
-}
-
-function getWoodPerSecond() {
-  return (state.lumberjack * UPGRADES.lumberjack.perSec) + 
-         (state.worker * UPGRADES.worker.perSec);
-}
-
-function getStonePerSecond() {
-  return state.miner * UPGRADES.miner.perSec;
 }
 
 function buyGenerator(type) {
@@ -760,7 +788,6 @@ function buyGenerator(type) {
     state.wood -= woodCost;
     state.stone -= stoneCost;
     state[type]++;
-    state.shopUnlocked = true;
     update();
   }
 }
@@ -784,9 +811,57 @@ function buyShopUpgrade(id) {
 
 
 /* =========================
-   UI
+   MINER MESSAGE
 ========================= */
 
+function showMinerMessage(text){
+  document.getElementById("messageContent").textContent = text;
+  document.getElementById("minerMessage").style.display = "block";
+}
+
+function closeMinerMessage(){
+  document.getElementById("minerMessage").style.display = "none";
+}
+
+
+/* =========================
+   TEXT EFFECT
+========================= */
+
+function showText(text){
+  let t = document.createElement("div");
+  t.innerText = text;
+  t.className = "floating";
+  t.style.left = "50%";
+  t.style.top = "50%";
+  t.style.color = text.includes("Wood") ? "#8B4513" : "#A9A9A9";
+  t.style.fontWeight = "bold";
+  t.style.textShadow = "1px 1px 2px rgba(0,0,0,0.8)";
+  document.body.appendChild(t);
+
+  setTimeout(()=>{
+    t.remove();
+  },1000);
+}
+
+
+/* =========================
+   GENERATORS
+========================= */
+
+function getWoodPerSecond() {
+  return (state.lumberjack * UPGRADES.lumberjack.perSec) + 
+         (state.worker * UPGRADES.worker.perSec);
+}
+
+function getStonePerSecond() {
+  return state.miner * UPGRADES.miner.perSec;
+}
+
+
+/* =========================
+   UI
+========================= */
 
 function update(){
   const woodPerSec = getWoodPerSecond();
@@ -828,11 +903,9 @@ ${genHTML}
 ${teleBtn}
 `;
 
-  // Update shop
   if(state.shopUnlocked) {
     let shopHTML = '';
     
-    // Generators
     Object.keys(UPGRADES).forEach(type => {
       const upgrade = UPGRADES[type];
       const level = state[type];
@@ -851,7 +924,6 @@ ${teleBtn}
       `;
     });
 
-    // Shop upgrades
     SHOP_UPGRADES.forEach(u => {
       const level = 0;
       const woodCost = getCostForLevel(u.baseCost.wood, level);
@@ -884,11 +956,9 @@ function gameLoop() {
   const deltaTime = (now - lastUpdateTime) / 1000;
   lastUpdateTime = now;
 
-  // Passive generation
   state.wood += getWoodPerSecond() * deltaTime;
   state.stone += getStonePerSecond() * deltaTime;
 
-  // Update timer
   const playtime = Math.floor((now - gameStartTime) / 1000);
   const hours = Math.floor(playtime / 3600);
   const mins = Math.floor((playtime % 3600) / 60);
@@ -914,6 +984,7 @@ function saveGame(){
   alert("Game saved! 💾");
 }
 
+
 /* =========================
    LOAD
 ========================= */
@@ -934,6 +1005,7 @@ function loadGame(){
   if(state.teleporterUnlocked) {
     document.getElementById("teleporter").style.display = "block";
     document.getElementById("quarryBtn").style.display = "inline-block";
+    document.getElementById("shopButton").style.display = "block";
   }
 
   if(state.location === "quarry") {
@@ -941,14 +1013,12 @@ function loadGame(){
   }
 }
 
-
 loadGame();
+updateBackpack();
 update();
 gameLoop();
 
-
 </script>
-
 
 </body>
 </html>
