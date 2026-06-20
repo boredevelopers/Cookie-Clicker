@@ -7,31 +7,47 @@
 
 body {
     margin:0;
-    font-family:Arial;
+    font-family:Arial,sans-serif;
     color:white;
-    background:#87ceeb;
+    background:linear-gradient(
+        to bottom,
+        #87ceeb 0%,
+        #87ceeb 55%,
+        #3cb371 55%,
+        #2e8b57 100%
+    );
+    height:100vh;
+    overflow:hidden;
 }
+
+
+/* GAME */
 
 #game {
     text-align:center;
-    padding-top:70px;
+    padding-top:80px;
 }
 
+
+/* TOP BAR */
+
 #topBar {
+
     position:fixed;
     top:10px;
     right:10px;
     display:flex;
     gap:10px;
+    z-index:2000;
+
 }
 
-button {
-    cursor:pointer;
-    padding:8px;
-}
 
+
+/* SHOP */
 
 #shop {
+
     position:fixed;
     right:-260px;
     top:0;
@@ -40,63 +56,132 @@ button {
     background:#f5e0b7;
     color:black;
     padding:15px;
-    transition:.3s;
+    transition:right 0.3s ease;
+
 }
+
 
 #shop.open {
+
     right:0;
+
 }
 
+
+
+
+/* BACKPACK */
 
 #backpack {
+
     position:fixed;
-    left:-260px;
-    top:0;
-    width:240px;
-    height:100vh;
+    left:10px;
+    top:60px;
     background:#333;
     padding:15px;
-    transition:.3s;
-}
-
-
-#backpack.open {
-    left:0;
-}
-
-
-img {
-
-    width:200px;
-    cursor:pointer;
-    image-rendering:pixelated;
-
-}
-
-
-#quarry {
     display:none;
+    z-index:2000;
+
+}
+
+
+
+
+button {
+
+cursor:pointer;
+margin-top:6px;
+padding:5px 10px;
+
+}
+
+
+
+
+/* FULL SCREEN OBJECTS */
+
+
+#tree,
+#quarryImage {
+
+
+position:absolute;
+
+width:100vw;
+
+height:100vh;
+
+object-fit:cover;
+
+left:0;
+
+top:0;
+
+z-index:-1;
+
+
+}
+
+
+
+#rock,
+#miner {
+
+
+width:180px;
+
+cursor:pointer;
+
+image-rendering:pixelated;
+
+}
+
+
+
+
+#tree:hover,
+#rock:hover,
+#miner:hover {
+
+transform:scale(1.05);
+
 }
 
 
 
 </style>
 
+
 </head>
+
 
 
 <body>
 
 
+
 <div id="topBar">
 
-<button onclick="toggleShop()">Shop</button>
+<button onclick="toggleShop()">
+☰ Shop
+</button>
 
-<button onclick="toggleBackpack()">🎒 Backpack</button>
 
-<button onclick="saveGame()">Save</button>
+<button onclick="openBackpack()">
+🎒 Backpack
+<span id="bagNotify"></span>
+</button>
+
+
+
+<button onclick="saveGame()">
+Save
+</button>
+
 
 </div>
+
+
 
 
 
@@ -106,20 +191,18 @@ img {
 <div id="island">
 
 
-<h1>🌴 Island</h1>
+<img id="tree"
+src="assets/tree.png"
+onclick="gatherWood()">
 
-
-<img src="assets/tree.png" onclick="gatherWood()">
-
-
-<p id="woodText">
-Wood:0
-</p>
 
 
 <button onclick="unlockTeleporter()">
+
 Unlock Teleporter (250 Wood)
+
 </button>
+
 
 
 </div>
@@ -127,20 +210,23 @@ Unlock Teleporter (250 Wood)
 
 
 
-<div id="quarry">
+<div id="quarry" style="display:none;">
 
 
-<h1>🪨 Quarry</h1>
+<img id="quarryImage"
+src="assets/quarry.png">
 
 
-<img src="assets/miner.png" onclick="gatherStone()">
+
+<img id="miner"
+src="assets/miner.png"
+onclick="gatherStone()">
 
 
 
 <p id="stoneText">
 Stone:0
 </p>
-
 
 
 <button onclick="returnIsland()">
@@ -153,9 +239,17 @@ Return Island
 
 
 
-<p id="stats">
-Time:0
+
+
+<p id="woodText">
+Wood:0
 </p>
+
+
+<p id="stats">
+Time:0s
+</p>
+
 
 
 </div>
@@ -166,10 +260,20 @@ Time:0
 
 <!-- SHOP -->
 
+
 <div id="shop">
 
 
-<h2>Shop</h2>
+<h2>
+Shop
+</h2>
+
+
+
+<h3>
+Wood Upgrades
+</h3>
+
 
 
 <button onclick="buyLumberjack()">
@@ -179,6 +283,13 @@ Lumberjack 🪓
 
 <p id="lumberInfo"></p>
 
+
+
+
+
+<h3>
+Stone Upgrades
+</h3>
 
 
 <button onclick="buyMiner()">
@@ -196,24 +307,29 @@ Miner ⛏️
 
 
 
+
+
 <!-- BACKPACK -->
 
 
 <div id="backpack">
 
 
-<h2>🎒 Backpack</h2>
+<h2>
+🎒 Backpack
+</h2>
 
 
-<div id="items">
+<div id="bagItems">
 
-Empty
+</div>
+
 
 </div>
 
 
 
-</div>
+
 
 
 
@@ -231,25 +347,34 @@ let wood = 0;
 let stone = 0;
 
 
+
 let woodPerSecond = 0;
 
 let stonePerSecond = 0;
 
 
-let teleporterUnlocked = false;
 
-let shopUnlocked = false;
-
-
-let locationNow = "island";
+let playTime = 0;
 
 
 
-let backpack = [];
+let teleporterUnlocked=false;
+
+let shopUnlocked=false;
 
 
 
-let lumberjack = {
+let backpack=[];
+
+
+
+let locationNow="island";
+
+
+
+
+
+let lumberjack={
 
 cost:50,
 
@@ -261,7 +386,7 @@ cps:1
 
 
 
-let miner = {
+let miner={
 
 cost:100,
 
@@ -273,7 +398,8 @@ cps:1
 
 
 
-let playTime = 0;
+
+
 
 
 
@@ -284,26 +410,38 @@ RESOURCES
 
 function gatherWood(){
 
+
 wood++;
 
-update();
+
+updateScreen();
+
 
 }
+
 
 
 
 
 function gatherStone(){
 
+
 if(locationNow=="quarry"){
+
 
 stone++;
 
-update();
+
+updateScreen();
+
 
 }
 
+
 }
+
+
+
 
 
 
@@ -314,13 +452,14 @@ TELEPORTER
 ========================= */
 
 
+
 function unlockTeleporter(){
 
 
-if(wood >=250 && !teleporterUnlocked){
+if(wood>=250 && !teleporterUnlocked){
 
 
-wood -=250;
+wood-=250;
 
 
 teleporterUnlocked=true;
@@ -334,6 +473,11 @@ backpack.push("Teleporter");
 
 
 
+document.getElementById("bagNotify")
+.innerText=" (1 new item)";
+
+
+
 alert("Teleporter unlocked!");
 
 
@@ -341,8 +485,7 @@ alert("Teleporter unlocked!");
 }
 
 
-
-update();
+updateScreen();
 
 
 }
@@ -350,16 +493,20 @@ update();
 
 
 
-function useTeleporter(){
 
 
-if(locationNow=="island"){
+
+function goQuarry(){
 
 
-document.getElementById("island").style.display="none";
+document.getElementById("island")
+.style.display="none";
 
 
-document.getElementById("quarry").style.display="block";
+
+document.getElementById("quarry")
+.style.display="block";
+
 
 
 locationNow="quarry";
@@ -368,17 +515,6 @@ locationNow="quarry";
 }
 
 
-else {
-
-
-returnIsland();
-
-
-}
-
-
-
-}
 
 
 
@@ -386,10 +522,14 @@ returnIsland();
 function returnIsland(){
 
 
-document.getElementById("quarry").style.display="none";
+document.getElementById("quarry")
+.style.display="none";
 
 
-document.getElementById("island").style.display="block";
+
+document.getElementById("island")
+.style.display="block";
+
 
 
 locationNow="island";
@@ -400,65 +540,73 @@ locationNow="island";
 
 
 
+
+
+
+
 /* =========================
 BACKPACK
 ========================= */
 
 
-function toggleBackpack(){
+
+function openBackpack(){
 
 
-document.getElementById("backpack")
-.classList.toggle("open");
+let bag=document.getElementById("backpack");
 
 
-showItems();
+bag.style.display =
+
+bag.style.display=="block"
+
+?
+
+"none"
+
+:
+
+"block";
 
 
-}
+
+let items=document.getElementById("bagItems");
 
 
 
-function showItems(){
+items.innerHTML="";
 
-
-let box=document.getElementById("items");
-
-
-box.innerHTML="";
-
-
-if(backpack.length==0){
-
-box.innerHTML="Empty";
-
-}
 
 
 backpack.forEach(item=>{
 
 
-let button=document.createElement("button");
+
+let btn=document.createElement("button");
 
 
-button.innerText=item;
+
+btn.innerText=item;
 
 
-button.onclick=()=>{
+
+btn.onclick=function(){
 
 
 if(item=="Teleporter"){
 
-useTeleporter();
+
+goQuarry();
+
 
 }
 
 
-}
+};
 
 
 
-box.appendChild(button);
+items.appendChild(btn);
 
 
 
@@ -470,9 +618,16 @@ box.appendChild(button);
 
 
 
+
+
+
+
+
+
 /* =========================
 SHOP
 ========================= */
+
 
 
 function toggleShop(){
@@ -480,17 +635,25 @@ function toggleShop(){
 
 if(!shopUnlocked){
 
+
 alert("Unlock Teleporter first!");
 
 return;
 
+
 }
+
 
 
 document.getElementById("shop")
 .classList.toggle("open");
 
+
+
 }
+
+
+
 
 
 
@@ -510,13 +673,14 @@ woodPerSecond+=lumberjack.cps;
 lumberjack.owned++;
 
 
-lumberjack.cost*=2;
+lumberjack.cost=Math.floor(lumberjack.cost*1.2);
+
 
 
 }
 
 
-update();
+updateScreen();
 
 
 }
@@ -540,30 +704,38 @@ stonePerSecond+=miner.cps;
 miner.owned++;
 
 
-miner.cost*=2;
+miner.cost=Math.floor(miner.cost*1.2);
+
+
+
+}
+
+
+updateScreen();
 
 
 }
 
 
-update();
 
 
-}
 
 
 
 
 /* =========================
-UPDATE UI
+UI
 ========================= */
 
 
-function update(){
+
+function updateScreen(){
+
 
 
 document.getElementById("woodText")
 .innerText="Wood: "+wood;
+
 
 
 document.getElementById("stoneText")
@@ -573,21 +745,21 @@ document.getElementById("stoneText")
 
 document.getElementById("lumberInfo")
 .innerText=
-"Owned:"+lumberjack.owned+
-" Cost:"+lumberjack.cost;
+"Owned: "+lumberjack.owned+
+" Cost: "+lumberjack.cost;
 
 
 
 document.getElementById("minerInfo")
 .innerText=
-"Owned:"+miner.owned+
-" Cost:"+miner.cost;
+"Owned: "+miner.owned+
+" Cost: "+miner.cost;
 
 
 
 document.getElementById("stats")
 .innerText=
-"Time:"+playTime;
+"Time: "+playTime+"s";
 
 
 
@@ -595,9 +767,15 @@ document.getElementById("stats")
 
 
 
+
+
+
+
+
 /* =========================
-GAME LOOP
+LOOP
 ========================= */
+
 
 
 setInterval(()=>{
@@ -612,11 +790,14 @@ stone+=stonePerSecond;
 playTime++;
 
 
-update();
+updateScreen();
 
 
 
 },1000);
+
+
+
 
 
 
@@ -627,17 +808,21 @@ SAVE LOAD
 ========================= */
 
 
+
 function saveGame(){
 
 
 localStorage.setItem("wood",wood);
 
+
 localStorage.setItem("stone",stone);
+
 
 localStorage.setItem(
 "teleporter",
 teleporterUnlocked
 );
+
 
 
 localStorage.setItem(
@@ -646,14 +831,12 @@ shopUnlocked
 );
 
 
+
 localStorage.setItem(
 "backpack",
 JSON.stringify(backpack)
 );
 
-
-
-alert("Saved");
 
 
 }
@@ -667,6 +850,7 @@ function loadGame(){
 
 wood=
 Number(localStorage.getItem("wood"))||0;
+
 
 
 stone=
@@ -695,12 +879,12 @@ localStorage.getItem("backpack")
 
 
 
-/* START */
 
 
 loadGame();
 
-update();
+updateScreen();
+
 
 
 </script>
