@@ -275,26 +275,6 @@ button:disabled {
     }
 }
 
-/* =========================
-   TREE CLICK ANIMATION
-========================= */
-
-.tree-click {
-    animation:treeClick 0.3s ease-out !important;
-}
-
-@keyframes treeClick {
-    0% {
-        transform:scale(1);
-    }
-    50% {
-        transform:scale(0.95);
-    }
-    100% {
-        transform:scale(1);
-    }
-}
-
 .shopTitle {
     font-size:16px;
     font-weight:bold;
@@ -595,13 +575,6 @@ function gatherWood(){
     const amount = state.woodPerClick;
     state.wood += amount;
     showText("+"+amount.toFixed(1)+" Wood");
-    
-    // Add tree click animation
-    const treeEl = document.getElementById("tree");
-    treeEl.classList.remove("tree-click");
-    void treeEl.offsetWidth; // Trigger reflow to restart animation
-    treeEl.classList.add("tree-click");
-    
     update();
   }
 }
