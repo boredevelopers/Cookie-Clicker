@@ -43,7 +43,7 @@ body {
     object-fit: cover;
     left: 0;
     top: 0;
-    z-index: -1;
+    z-index: 1;
     cursor: pointer;
 }
 
@@ -54,6 +54,7 @@ body {
     cursor: pointer;
     image-rendering: pixelated;
     transition: 0.1s;
+    z-index: 10;
 }
 
 #miner {
@@ -129,7 +130,7 @@ button:disabled {
     padding: 12px;
     border-radius: 4px;
     font-size: 13px;
-    z-index: 100;
+    z-index: 1500;
     line-height: 1.6;
 }
 
@@ -333,7 +334,7 @@ button:disabled {
 
 <div id="island">
     <img id="tree" src="assets/tree.png" onclick="gatherWood()">
-    <button id="unlockBtn" onclick="unlockTeleporter()" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    <button id="unlockBtn" onclick="unlockTeleporter()" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1500;">
         Unlock Teleporter<br>
         <span style="font-size: 12px;">250 Wood</span>
     </button>
