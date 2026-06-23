@@ -1,4 +1,4 @@
-+<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Island Builder</title>
@@ -25,6 +25,15 @@ body {
     width: 100vw;
     height: 100vh;
     position: relative;
+    transition: filter 0.5s;
+}
+
+#island.zone-forest {
+    filter: hue-rotate(15deg) saturate(1.1);
+}
+
+#island.zone-mountain {
+    filter: hue-rotate(-20deg) saturate(0.8) brightness(0.95);
 }
 
 #quarry {
@@ -77,21 +86,94 @@ body {
     transform: scale(1.1);
 }
 
-#hutsContainer {
+#mineContainer {
     position: absolute;
-    bottom: 10%;
+    bottom: 8%;
+    left: 5%;
+    display: flex;
+    gap: 12px;
+    z-index: 5;
+}
+
+.mineIcon {
+    width: 90px;
+    image-rendering: pixelated;
+}
+
+/* ISLAND BUILDINGS / VILLAGERS */
+
+#buildingsContainer {
+    position: absolute;
+    bottom: 8%;
     left: 5%;
     display: flex;
     gap: 15px;
     z-index: 5;
+    flex-wrap: wrap;
+    max-width: 40%;
 }
 
-.hutIcon {
+.hutIcon,
+.farmIcon {
     width: 70px;
     image-rendering: pixelated;
 }
 
-/* TOP BAR */
+#villagersContainer {
+    position: absolute;
+    bottom: 25%;
+    left: 5%;
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+    flex-wrap: wrap;
+    max-width: 50%;
+}
+
+.villagerIcon {
+    width: 36px;
+    image-rendering: pixelated;
+    animation: bob 1.5s ease-in-out infinite;
+}
+
+.villagerIcon:nth-child(even) {
+    animation-delay: 0.4s;
+}
+
+.villagerIcon:nth-child(3n) {
+    animation-delay: 0.8s;
+}
+
+@keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* TOP RESOURCE BAR */
+
+#resourceBar {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 24px;
+    border-radius: 30px;
+    display: flex;
+    gap: 24px;
+    z-index: 1600;
+    font-size: 15px;
+    font-weight: bold;
+    align-items: center;
+}
+
+.resourceBarItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* TOP BAR BUTTONS */
 
 #topBar {
     position: fixed;
@@ -141,7 +223,7 @@ button:disabled {
 
 #gameStats {
     position: fixed;
-    top: 10px;
+    top: 70px;
     left: 10px;
     background: rgba(0, 0, 0, 0.5);
     padding: 12px;
@@ -149,7 +231,7 @@ button:disabled {
     font-size: 13px;
     z-index: 1500;
     line-height: 1.6;
-    width: 220px;
+    width: 230px;
 }
 
 #gameStats .statDivider {
@@ -158,12 +240,22 @@ button:disabled {
     margin: 6px 0;
 }
 
+#foodStatusHealthy {
+    color: mediumseagreen;
+    font-weight: bold;
+}
+
+#foodStatusStarving {
+    color: lightcoral;
+    font-weight: bold;
+}
+
 /* VILLAGER PANEL */
 
 #villagerPanel {
     position: fixed;
-    top: 10px;
-    left: 240px;
+    top: 70px;
+    left: 250px;
     background: rgba(0, 0, 0, 0.5);
     padding: 12px;
     border-radius: 4px;
@@ -197,6 +289,38 @@ button:disabled {
     padding: 2px 8px;
     font-size: 12px;
     margin: 0 2px;
+}
+
+/* ZONE PANEL */
+
+#zonePanel {
+    position: fixed;
+    top: 70px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1500;
+    width: 180px;
+}
+
+#zonePanel h3 {
+    color: mediumseagreen;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.zoneItem {
+    padding: 4px 0;
+}
+
+.zoneLocked {
+    color: gray;
+}
+
+.zoneUnlocked {
+    color: white;
 }
 
 /* SHOP */
@@ -283,7 +407,7 @@ button:disabled {
 #backpack {
     position: fixed;
     left: 10px;
-    top: 260px;
+    top: 320px;
     background: rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(200, 150, 100, 0.7);
     padding: 15px;
@@ -329,7 +453,8 @@ button:disabled {
 /* MODALS */
 
 #teleportModal,
-#minerMessage {
+#minerMessage,
+#zoneUnlockModal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -346,6 +471,10 @@ button:disabled {
 
 #minerMessage {
     border-color: saddlebrown;
+}
+
+#zoneUnlockModal {
+    border-color: mediumseagreen;
 }
 
 .modalTitle {
@@ -410,22 +539,26 @@ button:disabled {
 
 <body>
 
+<div id="resourceBar">
+    <div class="resourceBarItem">🌲 <span id="barWood">0</span></div>
+    <div class="resourceBarItem">🪨 <span id="barStone">0</span></div>
+    <div class="resourceBarItem">🍎 <span id="barFood">0</span></div>
+    <div class="resourceBarItem">👥 <span id="barVillagers">0</span></div>
+</div>
+
 <div id="gameStats">
     <div>Location: <span id="locationText">Island</span></div>
     <div>Playtime: <span id="timeText">0s</span></div>
     <div>Island Level: <span id="islandLevelText">1</span></div>
     <div class="statDivider"></div>
-    <div>🌳 Wood: <span id="woodText">0</span></div>
-    <div>🪨 Stone: <span id="stoneText">0</span></div>
-    <div>🌾 Food: <span id="foodText">0</span></div>
-    <div class="statDivider"></div>
-    <div style="color: gold;">Per Second:</div>
-    <div>🌳/s: <span id="woodPerSecText">0</span></div>
+    <div>Per Second:</div>
+    <div>🌲/s: <span id="woodPerSecText">0</span></div>
     <div>🪨/s: <span id="stonePerSecText">0</span></div>
-    <div>🌾/s: <span id="foodPerSecText">0</span></div>
+    <div>🍎/s: <span id="foodPerSecText">0</span> (net)</div>
     <div class="statDivider"></div>
-    <div>🏠 Huts: <span id="hutsText">0</span></div>
+    <div>🏠 Huts: <span id="hutsText">0</span> | 🌾 Farms: <span id="farmsText">0</span> | ⛏️ Mines: <span id="minesText">0</span></div>
     <div>👥 Villagers: <span id="villagersText">0</span> (Idle: <span id="idleVillagersText">0</span>)</div>
+    <div>Food Status: <span id="foodStatusText">Healthy</span></div>
     <button id="unlockBtn" onclick="unlockTeleporter()" style="width: 100%; margin-top: 10px;">
         Unlock Teleporter<br>
         <span style="font-size: 12px;">250 Wood</span>
@@ -461,6 +594,13 @@ button:disabled {
     <div style="margin-top:8px; font-size:11px; color:darkgray;">Each worker: +0.2 resource/sec</div>
 </div>
 
+<div id="zonePanel">
+    <h3>🏝️ Island Zones</h3>
+    <div class="zoneItem zoneUnlocked" id="zoneBeach">🌴 Beach</div>
+    <div class="zoneItem zoneLocked" id="zoneForest">🌲 Forest (Lv 2)</div>
+    <div class="zoneItem zoneLocked" id="zoneMountain">⛰️ Mountain (Lv 3)</div>
+</div>
+
 <div id="topBar">
     <button onclick="toggleShop()" id="shopBtn">🛒 Shop</button>
     <button onclick="openBackpack()" style="position: relative;">
@@ -472,13 +612,15 @@ button:disabled {
 
 <div id="island">
     <img id="tree" src="assets/tree.png" onclick="gatherWood(event)">
-    <div id="hutsContainer"></div>
+    <div id="villagersContainer"></div>
+    <div id="buildingsContainer"></div>
 </div>
 
 <div id="quarry">
     <img id="quarryImage" src="assets/quarry.png">
     <img id="miner" src="assets/miner.png" onclick="clickMiner()">
     <img id="rock" src="assets/rock.png" onclick="gatherStone(event)">
+    <div id="mineContainer"></div>
     <button onclick="returnIsland()" style="position: absolute; bottom: 20px; left: 20px; z-index: 50;">← Island</button>
 </div>
 
@@ -496,6 +638,16 @@ button:disabled {
             <div class="itemTitle">🏠 Hut</div>
             <p id="hutInfo">Creates 1 villager | Cost: 100 Wood + 50 Stone</p>
             <button onclick="buyHut()">Build Hut</button>
+        </div>
+        <div class="shopItem">
+            <div class="itemTitle">🌾 Farm</div>
+            <p id="farmInfo">+0.1 food/sec passively | Cost: 120 Wood + 40 Stone</p>
+            <button onclick="buyFarm()">Build Farm</button>
+        </div>
+        <div class="shopItem">
+            <div class="itemTitle">⛏️ Mine</div>
+            <p id="mineInfo">+0.1 stone/sec passively | Cost: 120 Wood + 60 Stone</p>
+            <button onclick="buyMine()">Build Mine</button>
         </div>
         <div class="shopItem">
             <div class="itemTitle">🎒 Expand Backpack</div>
@@ -525,7 +677,7 @@ button:disabled {
     <div class="shopCategory" id="cat-island">
         <div class="shopItem">
             <div class="itemTitle">🌴 Upgrade Island</div>
-            <p id="islandUpgradeInfo">+10% click yield | Cost: 300 Wood + 150 Stone</p>
+            <p id="islandUpgradeInfo">+10% click yield, unlocks new zone | Cost: 300 Wood + 150 Stone</p>
             <button onclick="upgradeIsland()">Upgrade</button>
         </div>
     </div>
@@ -550,6 +702,12 @@ button:disabled {
     <button class="modalButton closeBtn" onclick="closeMinerMessage()">Close</button>
 </div>
 
+<div id="zoneUnlockModal">
+    <div class="modalTitle" style="color: mediumseagreen;">🏝️ New Zone Unlocked!</div>
+    <div id="zoneUnlockText" style="margin: 15px 0;"></div>
+    <button class="modalButton closeBtn" onclick="closeZoneUnlockModal()">Nice!</button>
+</div>
+
 <script>
 
 /* =========================
@@ -572,16 +730,22 @@ let state = {
     inventory: [],
     maxSlots: 5,
     huts: 0,
+    farms: 0,
+    mines: 0,
     villagers: 0,
     idleVillagers: 0,
     assignments: { lumberjack: 0, miner: 0, farmer: 0 },
     islandLevel: 1,
+    zonesUnlocked: ["beach"],
     hutCost: { wood: 100, stone: 50 },
+    farmCost: { wood: 120, stone: 40 },
+    mineCost: { wood: 120, stone: 60 },
     backpackUpgradeCost: 100,
     islandUpgradeCost: { wood: 300, stone: 150 }
 };
 
 const PER_WORKER_RATE = 0.2;
+const FOOD_CONSUMPTION_PER_VILLAGER = 0.05;
 
 /* =========================
    RESOURCES
@@ -622,11 +786,19 @@ function getWoodPerSecond() {
 }
 
 function getStonePerSecond() {
-    return state.assignments.miner * PER_WORKER_RATE;
+    return (state.assignments.miner * PER_WORKER_RATE) + (state.mines * 0.1);
 }
 
-function getFoodPerSecond() {
-    return state.assignments.farmer * PER_WORKER_RATE;
+function getFoodProduced() {
+    return (state.assignments.farmer * PER_WORKER_RATE) + (state.farms * 0.1);
+}
+
+function getFoodConsumed() {
+    return state.villagers * FOOD_CONSUMPTION_PER_VILLAGER;
+}
+
+function getNetFoodPerSecond() {
+    return getFoodProduced() - getFoodConsumed();
 }
 
 /* =========================
@@ -725,6 +897,10 @@ function showMinerMessage(text) {
     document.getElementById("minerMessage").style.display = "block";
 }
 
+function closeZoneUnlockModal() {
+    document.getElementById("zoneUnlockModal").style.display = "none";
+}
+
 /* =========================
    BUILDINGS / VILLAGERS
 ========================= */
@@ -735,11 +911,12 @@ function buyHut() {
         state.wood -= cost.wood;
         state.stone -= cost.stone;
         state.huts++;
-        state.villagers++;
-        state.idleVillagers++;
+        state.villagers += 2;
+        state.idleVillagers += 2;
         state.hutCost.wood = Math.ceil(cost.wood * 1.2);
         state.hutCost.stone = Math.ceil(cost.stone * 1.2);
-        renderHuts();
+        renderBuildings();
+        renderVillagers();
         document.getElementById("villagerToggleBtn").style.display = "block";
         updateScreen();
     } else {
@@ -747,13 +924,72 @@ function buyHut() {
     }
 }
 
-function renderHuts() {
-    let container = document.getElementById("hutsContainer");
+function buyFarm() {
+    const cost = state.farmCost;
+    if (state.wood >= cost.wood && state.stone >= cost.stone) {
+        state.wood -= cost.wood;
+        state.stone -= cost.stone;
+        state.farms++;
+        state.farmCost.wood = Math.ceil(cost.wood * 1.2);
+        state.farmCost.stone = Math.ceil(cost.stone * 1.2);
+        renderBuildings();
+        updateScreen();
+    } else {
+        alert("Not enough resources for a Farm!");
+    }
+}
+
+function buyMine() {
+    const cost = state.mineCost;
+    if (state.wood >= cost.wood && state.stone >= cost.stone) {
+        state.wood -= cost.wood;
+        state.stone -= cost.stone;
+        state.mines++;
+        state.mineCost.wood = Math.ceil(cost.wood * 1.2);
+        state.mineCost.stone = Math.ceil(cost.stone * 1.2);
+        renderMines();
+        updateScreen();
+    } else {
+        alert("Not enough resources for a Mine!");
+    }
+}
+
+function renderBuildings() {
+    let container = document.getElementById("buildingsContainer");
     container.innerHTML = "";
     for (let i = 0; i < state.huts; i++) {
         let img = document.createElement("img");
         img.src = "assets/hut.png";
         img.className = "hutIcon";
+        container.appendChild(img);
+    }
+    for (let i = 0; i < state.farms; i++) {
+        let img = document.createElement("img");
+        img.src = "assets/farm.png";
+        img.className = "farmIcon";
+        container.appendChild(img);
+    }
+}
+
+function renderMines() {
+    let container = document.getElementById("mineContainer");
+    container.innerHTML = "";
+    for (let i = 0; i < state.mines; i++) {
+        let img = document.createElement("img");
+        img.src = "assets/mine.png";
+        img.className = "mineIcon";
+        container.appendChild(img);
+    }
+}
+
+function renderVillagers() {
+    let container = document.getElementById("villagersContainer");
+    container.innerHTML = "";
+    const visibleCount = Math.min(state.villagers, 16);
+    for (let i = 0; i < visibleCount; i++) {
+        let img = document.createElement("img");
+        img.src = "assets/villager.png";
+        img.className = "villagerIcon";
         container.appendChild(img);
     }
 }
@@ -868,11 +1104,41 @@ function upgradeIsland() {
         state.stonePerClick *= 1.1;
         state.islandUpgradeCost.wood = Math.ceil(cost.wood * 1.5);
         state.islandUpgradeCost.stone = Math.ceil(cost.stone * 1.5);
-        alert("🌴 Island upgraded to Level " + state.islandLevel + "! Click yields increased.");
+        checkZoneUnlocks();
         updateScreen();
     } else {
         alert("Not enough resources to upgrade the island!");
     }
+}
+
+function checkZoneUnlocks() {
+    let unlockedNew = null;
+    if (state.islandLevel >= 2 && !state.zonesUnlocked.includes("forest")) {
+        state.zonesUnlocked.push("forest");
+        unlockedNew = "🌲 Forest";
+    }
+    if (state.islandLevel >= 3 && !state.zonesUnlocked.includes("mountain")) {
+        state.zonesUnlocked.push("mountain");
+        unlockedNew = "⛰️ Mountain";
+    }
+    if (unlockedNew) {
+        document.getElementById("zoneUnlockText").innerText = unlockedNew + " is now unlocked!";
+        document.getElementById("zoneUnlockModal").style.display = "block";
+    }
+    updateZoneVisuals();
+}
+
+function updateZoneVisuals() {
+    let islandEl = document.getElementById("island");
+    islandEl.classList.remove("zone-forest", "zone-mountain");
+    if (state.zonesUnlocked.includes("mountain")) {
+        islandEl.classList.add("zone-mountain");
+    } else if (state.zonesUnlocked.includes("forest")) {
+        islandEl.classList.add("zone-forest");
+    }
+
+    document.getElementById("zoneForest").className = "zoneItem " + (state.zonesUnlocked.includes("forest") ? "zoneUnlocked" : "zoneLocked");
+    document.getElementById("zoneMountain").className = "zoneItem " + (state.zonesUnlocked.includes("mountain") ? "zoneUnlocked" : "zoneLocked");
 }
 
 /* =========================
@@ -880,24 +1146,43 @@ function upgradeIsland() {
 ========================= */
 
 function updateScreen() {
-    document.getElementById("woodText").innerText = Math.floor(state.wood);
-    document.getElementById("stoneText").innerText = Math.floor(state.stone);
-    document.getElementById("foodText").innerText = Math.floor(state.food);
-    document.getElementById("woodPerSecText").innerText = getWoodPerSecond().toFixed(1);
-    document.getElementById("stonePerSecText").innerText = getStonePerSecond().toFixed(1);
-    document.getElementById("foodPerSecText").innerText = getFoodPerSecond().toFixed(1);
+    const woodPerSec = getWoodPerSecond();
+    const stonePerSec = getStonePerSecond();
+    const netFood = getNetFoodPerSecond();
+
+    document.getElementById("barWood").innerText = Math.floor(state.wood);
+    document.getElementById("barStone").innerText = Math.floor(state.stone);
+    document.getElementById("barFood").innerText = Math.floor(state.food);
+    document.getElementById("barVillagers").innerText = state.villagers;
+
+    document.getElementById("woodPerSecText").innerText = woodPerSec.toFixed(1);
+    document.getElementById("stonePerSecText").innerText = stonePerSec.toFixed(1);
+    document.getElementById("foodPerSecText").innerText = (netFood >= 0 ? "+" : "") + netFood.toFixed(2);
     document.getElementById("timeText").innerText = state.playTime + "s";
     document.getElementById("islandLevelText").innerText = state.islandLevel;
     document.getElementById("hutsText").innerText = state.huts;
+    document.getElementById("farmsText").innerText = state.farms;
+    document.getElementById("minesText").innerText = state.mines;
     document.getElementById("villagersText").innerText = state.villagers;
     document.getElementById("idleVillagersText").innerText = state.idleVillagers;
+
+    const statusEl = document.getElementById("foodStatusText");
+    if (netFood >= 0 || state.food > 0) {
+        statusEl.innerText = "Healthy";
+        statusEl.style.color = "mediumseagreen";
+    } else {
+        statusEl.innerText = "Starving";
+        statusEl.style.color = "lightcoral";
+    }
 
     document.getElementById("lumberjackCount").innerText = state.assignments.lumberjack;
     document.getElementById("minerCount").innerText = state.assignments.miner;
     document.getElementById("farmerCount").innerText = state.assignments.farmer;
 
     // Shop info text
-    document.getElementById("hutInfo").innerText = `Creates 1 villager | Cost: ${state.hutCost.wood} Wood + ${state.hutCost.stone} Stone`;
+    document.getElementById("hutInfo").innerText = `Creates 2 villagers | Cost: ${state.hutCost.wood} Wood + ${state.hutCost.stone} Stone`;
+    document.getElementById("farmInfo").innerText = `+0.1 food/sec passively | Cost: ${state.farmCost.wood} Wood + ${state.farmCost.stone} Stone`;
+    document.getElementById("mineInfo").innerText = `+0.1 stone/sec passively | Cost: ${state.mineCost.wood} Wood + ${state.mineCost.stone} Stone`;
     document.getElementById("backpackUpgradeInfo").innerText = `+5 slots (current: ${state.maxSlots}) | Cost: ${state.backpackUpgradeCost} Wood`;
     document.getElementById("pickaxeInfo").innerText = state.pickaxeUnlocked ? "✓ Owned" : "Cost: 50 Wood";
     document.getElementById("pickaxeBtn").disabled = state.pickaxeUnlocked;
@@ -905,7 +1190,7 @@ function updateScreen() {
     document.getElementById("betterAxeBtn").disabled = state.betterAxeOwned;
     document.getElementById("betterPickInfo").innerText = state.betterPickOwned ? "✓ Owned" : "Stone/click +0.5 | Cost: 150 Stone";
     document.getElementById("betterPickBtn").disabled = state.betterPickOwned;
-    document.getElementById("islandUpgradeInfo").innerText = `+10% click yield | Cost: ${state.islandUpgradeCost.wood} Wood + ${state.islandUpgradeCost.stone} Stone`;
+    document.getElementById("islandUpgradeInfo").innerText = `+10% click yield, unlocks new zone | Cost: ${state.islandUpgradeCost.wood} Wood + ${state.islandUpgradeCost.stone} Stone`;
 
     if (state.huts > 0) {
         document.getElementById("villagerToggleBtn").style.display = "block";
@@ -937,7 +1222,11 @@ function showFloatingText(text, color, event) {
 setInterval(() => {
     state.wood += getWoodPerSecond();
     state.stone += getStonePerSecond();
-    state.food += getFoodPerSecond();
+
+    const netFood = getNetFoodPerSecond();
+    state.food += netFood;
+    if (state.food < 0) state.food = 0;
+
     state.playTime++;
     updateScreen();
 }, 1000);
@@ -956,10 +1245,14 @@ function loadGame() {
     if (saved) {
         let loaded = JSON.parse(saved);
         state = Object.assign(state, loaded);
-        // Ensure nested objects exist if loading an older save
         if (!state.assignments) state.assignments = { lumberjack: 0, miner: 0, farmer: 0 };
         if (!state.hutCost) state.hutCost = { wood: 100, stone: 50 };
+        if (!state.farmCost) state.farmCost = { wood: 120, stone: 40 };
+        if (!state.mineCost) state.mineCost = { wood: 120, stone: 60 };
         if (!state.islandUpgradeCost) state.islandUpgradeCost = { wood: 300, stone: 150 };
+        if (!state.zonesUnlocked) state.zonesUnlocked = ["beach"];
+        if (state.farms === undefined) state.farms = 0;
+        if (state.mines === undefined) state.mines = 0;
     }
 
     if (state.teleporterUnlocked) {
@@ -973,9 +1266,16 @@ function loadGame() {
 
     // Always start on island visually
     state.location = "island";
-    renderHuts();
+    renderBuildings();
+    renderMines();
+    renderVillagers();
+    updateZoneVisuals();
     updateBackpack();
     updateScreen();
+}
+
+loadGame();
+
 </script>
 
 </body>
