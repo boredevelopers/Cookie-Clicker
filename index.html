@@ -333,7 +333,7 @@ button:disabled {
     height: 100vh;
     background: rgba(0, 0, 0, 0.85);
     border-left: 2px solid rgba(100, 200, 255, 0.5);
-    padding: 20px;
+    padding: 70px 20px 20px 20px;
     overflow-y: auto;
     transition: right 0.4s ease-out;
     z-index: 1999;
@@ -407,7 +407,6 @@ button:disabled {
 #backpack {
     position: fixed;
     left: 10px;
-    top: 320px;
     background: rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(200, 150, 100, 0.7);
     padding: 15px;
@@ -728,6 +727,7 @@ let state = {
     location: "island",
     playTime: 0,
     inventory: [],
+    unseenItems: 0,
     maxSlots: 5,
     huts: 0,
     farms: 0,
@@ -847,12 +847,26 @@ function addToInventory(itemName) {
         return false;
     }
     state.inventory.push(itemName);
+    state.unseenItems = (state.unseenItems || 0) + 1;
+    updateBackpack();
     return true;
+}
+
+function positionBackpack() {
+    let stats = document.getElementById("gameStats");
+    let bag = document.getElementById("backpack");
+    let rect = stats.getBoundingClientRect();
+    bag.style.top = (rect.bottom + 10) + "px";
 }
 
 function openBackpack() {
     let bag = document.getElementById("backpack");
-    bag.style.display = bag.style.display === "block" ? "none" : "block";
+    let isOpening = bag.style.display !== "block";
+    positionBackpack();
+    bag.style.display = isOpening ? "block" : "none";
+    if (isOpening) {
+        state.unseenItems = 0;
+    }
     updateBackpack();
 }
 
@@ -867,14 +881,18 @@ function updateBackpack() {
     if (state.inventory.length === 0) {
         items.innerHTML = "";
         empty.style.display = "block";
-        notify.style.display = "none";
     } else {
         empty.style.display = "none";
-        notify.innerHTML = state.inventory.length;
-        notify.style.display = "inline-block";
         items.innerHTML = state.inventory.map(item => `
             <button onclick="useItem('${item}')">${item}</button>
         `).join("");
+    }
+
+    if (state.unseenItems && state.unseenItems > 0) {
+        notify.innerHTML = state.unseenItems;
+        notify.style.display = "inline-block";
+    } else {
+        notify.style.display = "none";
     }
 }
 
@@ -1196,6 +1214,7 @@ function updateScreen() {
         document.getElementById("villagerToggleBtn").style.display = "block";
     }
 
+    positionBackpack();
     updateBackpack();
 }
 
@@ -1253,6 +1272,7 @@ function loadGame() {
         if (!state.zonesUnlocked) state.zonesUnlocked = ["beach"];
         if (state.farms === undefined) state.farms = 0;
         if (state.mines === undefined) state.mines = 0;
+        if (state.unseenItems === undefined) state.unseenItems = 0;
     }
 
     if (state.teleporterUnlocked) {
